@@ -38,13 +38,13 @@ implementation
 
 {$R *.dfm}
 
-procedure DoEditDefinition;
+function DoEditDefinition;
 begin
   FrmDefinition := TFrmDefinition.Create(Application);
   FrmDefinition.Edit := Edit;
   FrmDefinition.Def := Def;
   Result := FrmDefinition.ShowModal = mrOk;
-  if Result then Def := FrmDefinition.Def;
+  if Result then Def := FrmDefinition.Def;  
   FrmDefinition.Free;
 end;
 

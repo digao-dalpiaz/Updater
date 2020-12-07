@@ -67,12 +67,14 @@ object FrmMain: TFrmMain
       Top = 0
       Caption = 'Move Up'
       ImageIndex = 3
+      OnClick = BtnUpClick
     end
     object BtnDown: TToolButton
       Left = 108
       Top = 0
       Caption = 'Move Down'
       ImageIndex = 4
+      OnClick = BtnDownClick
     end
     object ToolButton7: TToolButton
       Left = 133
@@ -109,6 +111,7 @@ object FrmMain: TFrmMain
     Width = 532
     Height = 153
     Align = alTop
+    ItemHeight = 18
     Style = lbOwnerDrawFixed
     TabOrder = 1
   end
