@@ -2,7 +2,8 @@ program Updater;
 
 uses
   Vcl.Forms,
-  UFrmMain in 'UFrmMain.pas' {FrmMain};
+  UFrmMain in 'UFrmMain.pas' {FrmMain},
+  UConfig in 'UConfig.pas';
 
 {$R *.res}
 
