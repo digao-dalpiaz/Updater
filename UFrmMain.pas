@@ -32,6 +32,7 @@ type
     procedure BtnUpClick(Sender: TObject);
     procedure BtnDownClick(Sender: TObject);
     procedure LDefsClick(Sender: TObject);
+    procedure LDefsClickCheck(Sender: TObject);
   private
     procedure FillDefinitions;
     procedure MoveDefinition(Flag: Integer);
@@ -81,6 +82,14 @@ end;
 procedure TFrmMain.LDefsClick(Sender: TObject);
 begin
   UpdateButtons;
+end;
+
+procedure TFrmMain.LDefsClickCheck(Sender: TObject);
+var
+  D: TDefinition;
+begin
+  D := GetSelectedDefinition;
+  D.Checked := LDefs.Checked[LDefs.ItemIndex];
 end;
 
 function TFrmMain.AddDefinition(Def: TDefinition): Integer;

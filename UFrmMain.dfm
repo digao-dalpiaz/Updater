@@ -110,6 +110,7 @@ object FrmMain: TFrmMain
     Top = 25
     Width = 532
     Height = 153
+    OnClickCheck = LDefsClickCheck
     Align = alTop
     ItemHeight = 18
     Style = lbOwnerDrawFixed
