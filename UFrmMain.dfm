@@ -11,6 +11,8 @@ object FrmMain: TFrmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
@@ -36,18 +38,21 @@ object FrmMain: TFrmMain
       Top = 0
       Caption = 'New Definition'
       ImageIndex = 0
+      OnClick = BtnNewClick
     end
     object BtnEdit: TToolButton
       Left = 25
       Top = 0
       Caption = 'Edit Definition'
       ImageIndex = 1
+      OnClick = BtnEditClick
     end
     object BtnRemove: TToolButton
       Left = 50
       Top = 0
       Caption = 'Remove Definition'
       ImageIndex = 2
+      OnClick = BtnRemoveClick
     end
     object ToolButton4: TToolButton
       Left = 75

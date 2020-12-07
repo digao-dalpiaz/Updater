@@ -31,6 +31,8 @@ type
     procedure SaveDefinitions;
   end;
 
+var Config: TConfig;
+
 implementation
 
 uses System.Classes, System.SysUtils, System.IniFiles, System.IOUtils,

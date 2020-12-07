@@ -2,10 +2,8 @@ unit UFrmMain;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ToolWin,
-  System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.CheckLst, Vcl.ExtCtrls;
+uses Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls, Vcl.CheckLst,
+  System.ImageList, Vcl.ImgList, Vcl.ComCtrls, System.Classes, Vcl.ToolWin;
 
 type
   TFrmMain = class(TForm)
@@ -24,10 +22,13 @@ type
     LDefs: TCheckListBox;
     LLogs: TListBox;
     Splitter1: TSplitter;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure BtnNewClick(Sender: TObject);
+    procedure BtnEditClick(Sender: TObject);
+    procedure BtnRemoveClick(Sender: TObject);
   private
-    { Private declarations }
-  public
-    { Public declarations }
+    procedure FillDefinitions;
   end;
 
 var
@@ -36,5 +37,48 @@ var
 implementation
 
 {$R *.dfm}
+
+uses UConfig;
+
+procedure TFrmMain.FormCreate(Sender: TObject);
+begin
+  Config := TConfig.Create;
+  Config.LoadDefinitions;
+
+  FillDefinitions;
+end;
+
+procedure TFrmMain.FormDestroy(Sender: TObject);
+begin
+  Config.SaveDefinitions;
+  Config.Free;
+end;
+
+procedure TFrmMain.FillDefinitions;
+var
+  D: TDefinition;
+  Index: Integer;
+begin
+  for D in Config.LstDefinition do
+  begin
+    Index := LDefs.Items.AddObject(D.Name, D);
+    LDefs.Checked[Index] := D.Checked;
+  end;
+end;
+
+procedure TFrmMain.BtnNewClick(Sender: TObject);
+begin
+  //
+end;
+
+procedure TFrmMain.BtnEditClick(Sender: TObject);
+begin
+  //
+end;
+
+procedure TFrmMain.BtnRemoveClick(Sender: TObject);
+begin
+  //
+end;
 
 end.
