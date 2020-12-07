@@ -114,6 +114,7 @@ object FrmMain: TFrmMain
     ItemHeight = 18
     Style = lbOwnerDrawFixed
     TabOrder = 1
+    OnClick = LDefsClick
   end
   object LLogs: TListBox
     Left = 0

@@ -31,11 +31,13 @@ type
     procedure BtnRemoveClick(Sender: TObject);
     procedure BtnUpClick(Sender: TObject);
     procedure BtnDownClick(Sender: TObject);
+    procedure LDefsClick(Sender: TObject);
   private
     procedure FillDefinitions;
     procedure MoveDefinition(Flag: Integer);
     function AddDefinition(Def: TDefinition): Integer;
     function GetSelectedDefinition: TDefinition;
+    procedure UpdateButtons;
   end;
 
 var
@@ -53,12 +55,32 @@ begin
   Config.LoadDefinitions;
 
   FillDefinitions;
+
+  UpdateButtons;
 end;
 
 procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
   Config.SaveDefinitions;
   Config.Free;
+end;
+
+procedure TFrmMain.UpdateButtons;
+var
+  Sel: Boolean;
+begin
+  Sel := LDefs.ItemIndex <> -1;
+
+  BtnEdit.Enabled := Sel;
+  BtnRemove.Enabled := Sel;
+
+  BtnUp.Enabled := Sel and (LDefs.ItemIndex > 0);
+  BtnDown.Enabled := Sel and (LDefs.ItemIndex < LDefs.Count-1);
+end;
+
+procedure TFrmMain.LDefsClick(Sender: TObject);
+begin
+  UpdateButtons;
 end;
 
 function TFrmMain.AddDefinition(Def: TDefinition): Integer;
@@ -92,6 +114,8 @@ begin
   begin
     Index := AddDefinition(D);
     LDefs.ItemIndex := Index;
+
+    UpdateButtons;
   end;
 end;
 
@@ -114,6 +138,8 @@ begin
 
   Config.LstDefinition.Remove(D);
   LDefs.DeleteSelected;
+
+  UpdateButtons;
 end;
 
 procedure TFrmMain.MoveDefinition(Flag: Integer);
@@ -125,6 +151,8 @@ begin
 
   Config.LstDefinition.Exchange(Index, NewIndex);
   LDefs.Items.Exchange(Index, NewIndex);
+
+  UpdateButtons;
 end;
 
 procedure TFrmMain.BtnUpClick(Sender: TObject);
