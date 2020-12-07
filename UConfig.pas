@@ -12,16 +12,20 @@ type
     Inclusions: string;
     Exclusions: string;
     Recursive: Boolean;
-    Remove: Boolean;
+    Delete: Boolean;
 
     LastUpdate: TDateTime;
     Checked: Boolean;
   end;
+  TLstDefinition = class(TObjectList<TDefinition>);
 
   TConfig = class
-    LstDefinition: TObjectList<TDefinition>;
+    LstDefinition: TLstDefinition;
 
-    function GetDefinitionFile: string;
+    DefinitionFile: string;
+
+    constructor Create;
+    destructor Destroy; override;
 
     procedure LoadDefinitions;
     procedure SaveDefinitions;
@@ -32,9 +36,20 @@ implementation
 uses System.Classes, System.SysUtils, System.IniFiles, System.IOUtils,
   Vcl.Forms;
 
-function TConfig.GetDefinitionFile: string;
+const STR_ENTER = #13#10;
+
+constructor TConfig.Create;
 begin
-  Result := TPath.Combine(ExtractFilePath(Application.ExeName), 'Definitions.ini');
+  inherited;
+  LstDefinition := TLstDefinition.Create;
+
+  DefinitionFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Definitions.ini');
+end;
+
+destructor TConfig.Destroy;
+begin
+  LstDefinition.Free;
+  inherited;
 end;
 
 procedure TConfig.LoadDefinitions;
@@ -44,7 +59,7 @@ var
   S: TStringList;
   D: TDefinition;
 begin
-  Ini := TIniFile.Create(GetDefinitionFile);
+  Ini := TIniFile.Create(DefinitionFile);
   try
     S := TStringList.Create;
     try
@@ -58,10 +73,10 @@ begin
         D.Name := Section;
         D.Source := Ini.ReadString(Section, 'Source', '');
         D.Destination := Ini.ReadString(Section, 'Destination', '');
-        D.Inclusions := Ini.ReadString(Section, 'Inclusions', '').Replace('|', #13#10);
-        D.Exclusions := Ini.ReadString(Section, 'Exclusions', '').Replace('|', #13#10);
+        D.Inclusions := Ini.ReadString(Section, 'Inclusions', '').Replace('|', STR_ENTER);
+        D.Exclusions := Ini.ReadString(Section, 'Exclusions', '').Replace('|', STR_ENTER);
         D.Recursive := Ini.ReadBool(Section, 'Recursive', False);
-        D.Remove := Ini.ReadBool(Section, 'Remove', False);
+        D.Delete := Ini.ReadBool(Section, 'Delete', False);
         D.LastUpdate := Ini.ReadDateTime(Section, 'LastUpdate', 0);
         D.Checked := Ini.ReadBool(Section, 'Checked', False);
       end;
@@ -79,7 +94,9 @@ var
   D: TDefinition;
   Section: string;
 begin
-  Ini := TIniFile.Create(GetDefinitionFile);
+  TFile.WriteAllText(DefinitionFile, string.Empty); //ensure clear file
+
+  Ini := TIniFile.Create(DefinitionFile);
   try
     for D in LstDefinition do
     begin
@@ -87,10 +104,10 @@ begin
 
       Ini.WriteString(Section, 'Source', D.Source);
       Ini.WriteString(Section, 'Destination', D.Destination);
-      Ini.WriteString(Section, 'Inclusions', D.Inclusions.Replace(#13#10, '|'));
-      Ini.WriteString(Section, 'Exclusions', D.Exclusions.Replace(#13#10, '|'));
+      Ini.WriteString(Section, 'Inclusions', D.Inclusions.Replace(STR_ENTER, '|'));
+      Ini.WriteString(Section, 'Exclusions', D.Exclusions.Replace(STR_ENTER, '|'));
       Ini.WriteBool(Section, 'Recursive', D.Recursive);
-      Ini.WriteBool(Section, 'Remove', D.Remove);
+      Ini.WriteBool(Section, 'Delete', D.Delete);
       Ini.WriteDateTime(Section, 'LastUpdate', D.LastUpdate);
       Ini.WriteBool(Section, 'Checked', D.Checked);
     end;
