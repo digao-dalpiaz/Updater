@@ -3,7 +3,9 @@ unit UFrmMain;
 interface
 
 uses Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls, Vcl.CheckLst,
-  System.ImageList, Vcl.ImgList, Vcl.ComCtrls, System.Classes, Vcl.ToolWin;
+  System.ImageList, Vcl.ImgList, Vcl.ComCtrls, System.Classes, Vcl.ToolWin,
+  //
+  UConfig;
 
 type
   TFrmMain = class(TForm)
@@ -32,6 +34,8 @@ type
   private
     procedure FillDefinitions;
     procedure MoveDefinition(Flag: Integer);
+    function AddDefinition(Def: TDefinition): Integer;
+    function GetSelectedDefinition: TDefinition;
   end;
 
 var
@@ -41,7 +45,7 @@ implementation
 
 {$R *.dfm}
 
-uses UConfig, UFrmDefinition, System.SysUtils;
+uses UFrmDefinition, System.SysUtils;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -57,6 +61,16 @@ begin
   Config.Free;
 end;
 
+function TFrmMain.AddDefinition(Def: TDefinition): Integer;
+begin
+  Result := LDefs.Items.AddObject(Def.Name, Def);
+end;
+
+function TFrmMain.GetSelectedDefinition: TDefinition;
+begin
+  Result := TDefinition(LDefs.Items.Objects[LDefs.ItemIndex]);
+end;
+
 procedure TFrmMain.FillDefinitions;
 var
   D: TDefinition;
@@ -64,7 +78,7 @@ var
 begin
   for D in Config.LstDefinition do
   begin
-    Index := LDefs.Items.AddObject(D.Name, D);
+    Index := AddDefinition(D);
     LDefs.Checked[Index] := D.Checked;
   end;
 end;
@@ -76,7 +90,7 @@ var
 begin
   if DoEditDefinition(False, D) then
   begin
-    Index := LDefs.Items.AddObject(D.Name, D);
+    Index := AddDefinition(D);
     LDefs.ItemIndex := Index;
   end;
 end;
@@ -85,7 +99,7 @@ procedure TFrmMain.BtnEditClick(Sender: TObject);
 var
   D: TDefinition;
 begin
-  D := TDefinition(LDefs.Items.Objects[LDefs.ItemIndex]);
+  D := GetSelectedDefinition;
   if DoEditDefinition(True, D) then
   begin
     LDefs.Items[LDefs.ItemIndex] := D.Name;
@@ -96,7 +110,7 @@ procedure TFrmMain.BtnRemoveClick(Sender: TObject);
 var
   D: TDefinition;
 begin
-  D := TDefinition(LDefs.Items.Objects[LDefs.ItemIndex]);
+  D := GetSelectedDefinition;
 
   Config.LstDefinition.Remove(D);
   LDefs.DeleteSelected;
