@@ -92,14 +92,14 @@ begin
   D.Checked := LDefs.Checked[LDefs.ItemIndex];
 end;
 
-function TFrmMain.AddDefinition(Def: TDefinition): Integer;
-begin
-  Result := LDefs.Items.AddObject(Def.Name, Def);
-end;
-
 function TFrmMain.GetSelectedDefinition: TDefinition;
 begin
   Result := TDefinition(LDefs.Items.Objects[LDefs.ItemIndex]);
+end;
+
+function TFrmMain.AddDefinition(Def: TDefinition): Integer;
+begin
+  Result := LDefs.Items.AddObject(Def.Name, Def);
 end;
 
 procedure TFrmMain.FillDefinitions;
