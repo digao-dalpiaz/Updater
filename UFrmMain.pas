@@ -69,11 +69,13 @@ implementation
 {$R *.dfm}
 
 uses Winapi.Windows, Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
-  UFrmDefinition, UEngine;
+  UFrmDefinition, UEngine, URegistry;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
   ReportMemoryLeaksOnShutdown := True;
+
+  TCustomization.LoadRegistry;
 
   Config := TConfig.Create;
   Config.LoadDefinitions;
@@ -87,6 +89,8 @@ procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
   Config.SaveDefinitions;
   Config.Free;
+
+  TCustomization.SaveRegistry;
 end;
 
 procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);

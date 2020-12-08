@@ -5,7 +5,8 @@ uses
   UFrmMain in 'UFrmMain.pas' {FrmMain},
   UConfig in 'UConfig.pas',
   UFrmDefinition in 'UFrmDefinition.pas' {FrmDefinition},
-  UEngine in 'UEngine.pas';
+  UEngine in 'UEngine.pas',
+  URegistry in 'URegistry.pas';
 
 {$R *.res}
 
