@@ -105,17 +105,21 @@ begin
       procedure
       var
         A: string;
+        AtEnd: Boolean;
       begin
         if Queue.Log.Count>0 then
         begin
-          //FrmMain.LLogs.Items.BeginUpdate;
+          AtEnd := FrmMain.LLogs.ItemIndex = FrmMain.LLogs.Count-1;
+
+          FrmMain.LLogs.Items.BeginUpdate;
           try
             for A in Queue.Log do
               FrmMain.LLogs.Items.Add(A);
+
+            if AtEnd then FrmMain.LLogs.ItemIndex := FrmMain.LLogs.Count-1;
           finally
-            //FrmMain.LLogs.Items.EndUpdate;
+            FrmMain.LLogs.Items.EndUpdate;
           end;
-          FrmMain.LLogs.TopIndex := FrmMain.LLogs.Count-1;
 
           Queue.Log.Clear;
         end;
