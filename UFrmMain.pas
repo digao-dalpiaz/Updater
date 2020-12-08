@@ -30,6 +30,7 @@ type
     BtnStop: TSpeedButton;
     ProgressBar: TProgressBar;
     LbSize: TLabel;
+    IL_Disabled: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -48,7 +49,7 @@ type
     EngineRunning: Boolean;
 
     procedure FillDefinitions;
-    procedure MoveDefinition(Flag: Integer);
+    procedure MoveDefinition(Flag: ShortInt);
     function AddDefinition(Def: TDefinition): Integer;
     function GetSelectedDefinition: TDefinition;
     procedure UpdateButtons;
@@ -181,7 +182,7 @@ begin
   end;
 end;
 
-procedure TFrmMain.MoveDefinition(Flag: Integer);
+procedure TFrmMain.MoveDefinition(Flag: ShortInt);
 var
   Index, NewIndex: Integer;
 begin

@@ -33,8 +33,9 @@ type
 
     procedure DoDefinition(Def: TDefinition);
     procedure CheckForQueueFlush(ForceUpdate: Boolean);
-    procedure CopyFile(SourceFile, DestinationFile: string);
+    procedure CopyFile(Def: TDefinition; FI: TFileInfo);
     procedure DoScan(Def: TDefinition; L: TLstFileInfo);
+    procedure CopyStream(Source, Destination: TStream);
   public
     constructor Create;
     destructor Destroy; override;
@@ -214,7 +215,7 @@ procedure TEngine.DoDefinition(Def: TDefinition);
 var
   L: TLstFileInfo;
   FI: TFileInfo;
-  A, SourceFile, DestFile, DestDirectory: string;
+  A: string;
 begin
   Queue.TotalSize := 0;
   Queue.CurrentSize := 0;
@@ -242,20 +243,13 @@ begin
     begin
       A := FI.RelativePath;
 
-      SourceFile := TPath.Combine(Def.Source, A);
-      DestFile := TPath.Combine(Def.Destination, A);
-
       case FI.Operation of
         foAppend:
         begin
           Log('+'+A, False);
           Status('Appending '+A, False);
 
-          DestDirectory := ExtractFilePath(DestFile);
-          if not TDirectory.Exists(DestDirectory) then
-            ForceDirectories(DestDirectory);
-
-          CopyFile(SourceFile, DestFile);
+          CopyFile(Def, FI);
         end;
 
         foUpdate:
@@ -263,7 +257,7 @@ begin
           Log('~'+A, False);
           Status('Updating '+A, False);
 
-          CopyFile(SourceFile, DestFile);
+          CopyFile(Def, FI);
         end;
 
         foDelete:
@@ -271,7 +265,7 @@ begin
           Log('-'+A, False);
           Status('Deleting '+A, False);
 
-          TFile.Delete(DestFile);
+          TFile.Delete(TPath.Combine(Def.Destination, A));
         end;
 
         else raise Exception.Create('Invalid operation');
@@ -288,36 +282,26 @@ begin
   Def.LastUpdate := Now;
 end;
 
-procedure TEngine.CopyFile(SourceFile, DestinationFile: string);
-const
-  MaxBufSize = $F000;
+procedure TEngine.CopyFile(Def: TDefinition; FI: TFileInfo);
 var
+  SourceFile, DestFile, DestDirectory: string;
   SourceStm, DestStm: TFileStream;
-  BufSize, N: Integer;
-  Buffer: TBytes;
-  Count: Int64;
 begin
+  SourceFile := TPath.Combine(Def.Source, FI.RelativePath);
+  DestFile := TPath.Combine(Def.Destination, FI.RelativePath);
+
+  DestDirectory := ExtractFilePath(DestFile);
+  if not TDirectory.Exists(DestDirectory) then
+    ForceDirectories(DestDirectory);
+
   SourceStm := TFileStream.Create(SourceFile, fmOpenRead);
   try
-    DestStm := TFileStream.Create(DestinationFile, fmCreate);
-    try
-      Count := SourceStm.Size;
-      if Count > MaxBufSize then BufSize := MaxBufSize else BufSize := Count;
-      SetLength(Buffer, BufSize);
-      try
-        while Count <> 0 do
-        begin
-          if Count > BufSize then N := BufSize else N := Count;
-          SourceStm.ReadBuffer(Buffer, N);
-          DestStm.WriteBuffer(Buffer, N);
-          Dec(Count, N);
+    //if file size changed during process, adjust total size
+    Queue.TotalSize := Queue.TotalSize + (SourceStm.Size - FI.Size);
 
-          Queue.CurrentSize := Queue.CurrentSize + N;
-          CheckForQueueFlush(False);
-        end;
-      finally
-        SetLength(Buffer, 0);
-      end;
+    DestStm := TFileStream.Create(DestFile, fmCreate);
+    try
+      CopyStream(SourceStm, DestStm);
     finally
       DestStm.Free;
     end;
@@ -325,7 +309,34 @@ begin
     SourceStm.Free;
   end;
 
-  TFile.SetLastWriteTime(DestinationFile, TFile.GetLastWriteTime(SourceFile));
+  TFile.SetLastWriteTime(DestFile, TFile.GetLastWriteTime(SourceFile));
+end;
+
+procedure TEngine.CopyStream(Source, Destination: TStream);
+const
+  MaxBufSize = $F000;
+var
+  BufSize, N: Integer;
+  Buffer: TBytes;
+  Count: Int64;
+begin
+  Count := Source.Size;
+  if Count > MaxBufSize then BufSize := MaxBufSize else BufSize := Count;
+  SetLength(Buffer, BufSize);
+  try
+    while Count <> 0 do
+    begin
+      if Count > BufSize then N := BufSize else N := Count;
+      Source.ReadBuffer(Buffer, N);
+      Destination.WriteBuffer(Buffer, N);
+      Dec(Count, N);
+
+      Queue.CurrentSize := Queue.CurrentSize + N;
+      CheckForQueueFlush(False);
+    end;
+  finally
+    SetLength(Buffer, 0);
+  end;
 end;
 
 end.
