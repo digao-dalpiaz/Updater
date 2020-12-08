@@ -14,6 +14,7 @@ object FrmMain: TFrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter: TSplitter
@@ -116,6 +117,7 @@ object FrmMain: TFrmMain
     Style = lbOwnerDrawFixed
     TabOrder = 1
     OnClick = LDefsClick
+    OnDrawItem = LDefsDrawItem
   end
   object LLogs: TListBox
     Left = 0

@@ -46,6 +46,9 @@ type
     procedure LLogsDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState);
     procedure BtnStopClick(Sender: TObject);
+    procedure LDefsDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState);
+    procedure FormResize(Sender: TObject);
   private
     EngineRunning: Boolean;
 
@@ -95,6 +98,11 @@ begin
   end;
 end;
 
+procedure TFrmMain.FormResize(Sender: TObject);
+begin
+  LDefs.Invalidate;
+end;
+
 procedure TFrmMain.UpdateButtons;
 var
   Sel: Boolean;
@@ -119,6 +127,29 @@ var
 begin
   D := GetSelectedDefinition;
   D.Checked := LDefs.Checked[LDefs.ItemIndex];
+end;
+
+procedure TFrmMain.LDefsDrawItem(Control: TWinControl; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState);
+var
+  D: TDefinition;
+begin
+  if odSelected in State then LDefs.Canvas.Brush.Color := $005CC5FC;
+  LDefs.Canvas.FillRect(Rect);
+
+  D := TDefinition(LDefs.Items.Objects[Index]);
+
+  LDefs.Canvas.Font.Color := clBlack;
+  LDefs.Canvas.TextOut(Rect.Left+2, Rect.Top+2, D.Name);
+  if D.LastUpdate>0 then
+  begin
+    LDefs.Canvas.Font.Color := clGray;
+    LDefs.Canvas.TextOut(Rect.Right-110, Rect.Top+2, DateTimeToStr(D.LastUpdate));
+  end;
+
+  //avoid incorrect focus color
+  LDefs.Canvas.Font.Color := clBlack;
+  LDefs.Canvas.TextOut(0, 0, string.Empty);
 end;
 
 function TFrmMain.GetSelectedDefinition: TDefinition;
