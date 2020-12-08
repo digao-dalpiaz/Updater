@@ -74,9 +74,9 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.Windows, Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
-  UFrmDefinition, UEngine, URegistry,
-  Winapi.ShellAPI;
+uses Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
+  Winapi.Windows, Winapi.ShellAPI,
+  UFrmDefinition, UEngine, URegistry;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
