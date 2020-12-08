@@ -157,6 +157,21 @@ object FrmMain: TFrmMain
       Height = 13
       Caption = 'LbStatus'
     end
+    object BtnStop: TSpeedButton
+      Left = 480
+      Top = 8
+      Width = 25
+      Height = 25
+      Caption = 'X'
+      OnClick = BtnStopClick
+    end
+    object ProgressBar: TProgressBar
+      Left = 128
+      Top = 16
+      Width = 150
+      Height = 17
+      TabOrder = 0
+    end
   end
   object IL: TImageList
     Left = 152

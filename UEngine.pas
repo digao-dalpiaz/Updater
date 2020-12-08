@@ -9,15 +9,21 @@ type
   protected
     procedure Execute; override;
   private
-    LogQueue: TStringList;
-    StatusQueue: string;    
-    LastTick: Cardinal;
+    LastTick: Cardinal; //GPU update controller
+
+    Queue: record
+      Log: TStringList;
+      Status: string;
+      Percent: Byte;
+    end;
+
     procedure Log(const Text: string; ForceUpdate: Boolean = True);
     procedure Status(const Text: string; ForceUpdate: Boolean = True);
-    procedure PrintLogQueue;
+    procedure Percent(Value: Byte);
 
     procedure DoDefinition(Def: TDefinition);
     procedure CheckForQueueFlush(ForceUpdate: Boolean);
+    procedure CopyFile(SourceFile, DestinationFile: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -32,13 +38,13 @@ begin
   inherited Create(True);
   FreeOnTerminate := True;
 
-  LogQueue := TStringList.Create;
   LastTick := GetTickCount;
+  Queue.Log := TStringList.Create;
 end;
 
 destructor TEngine.Destroy;
 begin
-  LogQueue.Free;
+  Queue.Log.Free;
 
   inherited;
 
@@ -61,47 +67,54 @@ begin
       Log('#ERROR: '+E.Message);
   end;
 
-  PrintLogQueue; //remaining log
+  CheckForQueueFlush(True); //remaining log
 end;
 
 procedure TEngine.Log(const Text: string; ForceUpdate: Boolean);
 begin
-  LogQueue.Add(Text);
+  Queue.Log.Add(Text);
 
   CheckForQueueFlush(ForceUpdate);
 end;
 
 procedure TEngine.Status(const Text: string; ForceUpdate: Boolean);
 begin
-  StatusQueue := Text;
+  Queue.Status := Text;
 
   CheckForQueueFlush(ForceUpdate);
+end;
+
+procedure TEngine.Percent(Value: Byte);
+begin
+  Queue.Percent := Value;
+
+  CheckForQueueFlush(False);
 end;
 
 procedure TEngine.CheckForQueueFlush(ForceUpdate: Boolean);
 begin
   if ForceUpdate or (GetTickCount > LastTick+1000) then
   begin
-    PrintLogQueue;    
+    Synchronize(
+      procedure
+      var
+        A: string;
+      begin
+        for A in Queue.Log do
+          FrmMain.LLogs.Items.Add(A);
 
+        FrmMain.LbStatus.Caption := Queue.Status;
+        FrmMain.ProgressBar.Position := Queue.Percent;
+
+        if not FrmMain.BtnStop.Enabled then
+          raise Exception.Create('Process aborted by user');
+      end);
+
+    Queue.Log.Clear;
+
+    //
     LastTick := GetTickCount;
   end;
-end;
-
-procedure TEngine.PrintLogQueue;
-begin
-  Synchronize(
-    procedure
-    var
-      A: string;
-    begin
-      for A in LogQueue do
-        FrmMain.LLogs.Items.Add(A);
-
-      FrmMain.LbStatus.Caption := StatusQueue;
-    end);
-
-  LogQueue.Clear;
 end;
 
 procedure TEngine.DoDefinition(Def: TDefinition);
@@ -123,6 +136,7 @@ procedure TEngine.DoDefinition(Def: TDefinition);
 var
   DS_Src, DS_Dest: TDzDirSeek;
   A: string;
+  SourceFile, DestFile: string;
 begin
   Log('@'+Def.Name);
   Status(string.Empty);
@@ -145,29 +159,52 @@ begin
     Status('Scanning destination...');
     DS_Dest.Seek;
 
-    Status('Comparing...');      
+    Status(string.Empty);
 
     for A in DS_Src.List do
     begin
+      SourceFile := TPath.Combine(Def.Source, A);
+      DestFile := TPath.Combine(Def.Destination, A);
+
       if DS_Dest.List.IndexOf(A) = -1 then
       begin
         //new file
         Log('+'+A, False);
+        Status('Appending '+A, False);
+
+        if not TDirectory.Exists(ExtractFilePath(DestFile)) then
+          ForceDirectories(ExtractFilePath(DestFile));
+
+        CopyFile(SourceFile, DestFile);
       end else
       begin
         //existent file
-        if TFile.GetLastWriteTime(TPath.Combine(DS_Src.Dir, A)) <>
-           TFile.GetLastWriteTime(TPath.Combine(DS_Dest.Dir, A)) then
+        if TFile.GetLastWriteTime(SourceFile) <>
+           TFile.GetLastWriteTime(DestFile) then
+        begin
           Log('~'+A, False);
-      end;
-    end;  
+          Status('Updating '+A, False);
 
-    for A in DS_Dest.List do
+          CopyFile(SourceFile, DestFile);
+        end;
+      end;
+
+      Status(string.Empty, False);
+      Percent(0);
+    end;
+
+    if Def.Delete then
     begin
-      if DS_Src.List.IndexOf(A) = -1 then
+      for A in DS_Dest.List do
       begin
-        //removed file
-        Log('-'+A, False);
+        if DS_Src.List.IndexOf(A) = -1 then
+        begin
+          //removed file
+          Log('-'+A, False);
+          Status('Deleting '+A, False);
+
+          TFile.Delete(TPath.Combine(Def.Destination, A));
+        end;
       end;
     end;
 
@@ -175,6 +212,47 @@ begin
     DS_Src.Free;
     DS_Dest.Free;
   end;
+
+  Def.LastUpdate := Now;
+end;
+
+procedure TEngine.CopyFile(SourceFile, DestinationFile: string);
+const
+  MaxBufSize = $F000;
+var
+  SourceStm, DestStm: TFileStream;
+  BufSize, N: Integer;
+  Buffer: TBytes;
+  Count: Int64;
+begin
+  SourceStm := TFileStream.Create(SourceFile, fmOpenRead);
+  try
+    DestStm := TFileStream.Create(DestinationFile, fmCreate);
+    try
+      Count := SourceStm.Size;
+      if Count > MaxBufSize then BufSize := MaxBufSize else BufSize := Count;
+      SetLength(Buffer, BufSize);
+      try
+        while Count <> 0 do
+        begin
+          if Count > BufSize then N := BufSize else N := Count;
+          SourceStm.ReadBuffer(Buffer, N);
+          DestStm.WriteBuffer(Buffer, N);
+          Dec(Count, N);
+
+          Percent(Trunc(DestStm.Size / SourceStm.Size * 100));
+        end;
+      finally
+        SetLength(Buffer, 0);
+      end;
+    finally
+      DestStm.Free;
+    end;
+  finally
+    SourceStm.Free;
+  end;
+
+  TFile.SetLastWriteTime(DestinationFile, TFile.GetLastWriteTime(SourceFile));
 end;
 
 end.

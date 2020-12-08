@@ -5,7 +5,7 @@ interface
 uses Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls, Vcl.CheckLst,
   System.ImageList, Vcl.ImgList, Vcl.ComCtrls, System.Classes, Vcl.ToolWin,
   //
-  UConfig, System.Types;
+  UConfig, System.Types, Vcl.Buttons;
 
 type
   TFrmMain = class(TForm)
@@ -26,6 +26,8 @@ type
     Splitter1: TSplitter;
     BoxProgress: TPanel;
     LbStatus: TLabel;
+    BtnStop: TSpeedButton;
+    ProgressBar: TProgressBar;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -39,6 +41,7 @@ type
     procedure BtnExecuteClick(Sender: TObject);
     procedure LLogsDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState);
+    procedure BtnStopClick(Sender: TObject);
   private
     EngineRunning: Boolean;
 
@@ -218,6 +221,11 @@ begin
 
   ToolBar.Visible := Active;
   LDefs.Enabled := Active;
+end;
+
+procedure TFrmMain.BtnStopClick(Sender: TObject);
+begin
+  BtnStop.Enabled := False;
 end;
 
 procedure TFrmMain.LLogsDrawItem(Control: TWinControl; Index: Integer;
