@@ -55,6 +55,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure LbDigaoLinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
+    procedure BtnMasksClick(Sender: TObject);
   private
     EngineRunning: Boolean;
 
@@ -252,6 +253,11 @@ end;
 procedure TFrmMain.BtnDownClick(Sender: TObject);
 begin
   MoveDefinition(+1);
+end;
+
+procedure TFrmMain.BtnMasksClick(Sender: TObject);
+begin
+  raise Exception.Create('Not implemented yet');
 end;
 
 procedure TFrmMain.BtnExecuteClick(Sender: TObject);

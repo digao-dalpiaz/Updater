@@ -292,6 +292,7 @@ object FrmMain: TFrmMain
         Top = 0
         Caption = 'Masks Tables'
         ImageIndex = 5
+        OnClick = BtnMasksClick
       end
       object BtnSeparator3: TToolButton
         Left = 196
