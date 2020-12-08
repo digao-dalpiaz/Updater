@@ -11,6 +11,7 @@ object FrmMain: TFrmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -103,6 +104,7 @@ object FrmMain: TFrmMain
       Top = 0
       Caption = 'Execute'
       ImageIndex = 6
+      OnClick = BtnExecuteClick
     end
   end
   object LDefs: TCheckListBox

@@ -33,12 +33,18 @@ type
     procedure BtnDownClick(Sender: TObject);
     procedure LDefsClick(Sender: TObject);
     procedure LDefsClickCheck(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure BtnExecuteClick(Sender: TObject);
   private
+    EngineRunning: Boolean;
+
     procedure FillDefinitions;
     procedure MoveDefinition(Flag: Integer);
     function AddDefinition(Def: TDefinition): Integer;
     function GetSelectedDefinition: TDefinition;
     procedure UpdateButtons;
+  public
+    procedure SetControlsState(Active: Boolean);
   end;
 
 var
@@ -49,7 +55,8 @@ implementation
 {$R *.dfm}
 
 uses UFrmDefinition, System.SysUtils,
-  Vcl.Dialogs, System.UITypes;
+  Vcl.Dialogs, System.UITypes,
+  UEngine;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -65,6 +72,15 @@ procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
   Config.SaveDefinitions;
   Config.Free;
+end;
+
+procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if EngineRunning then
+  begin
+    CanClose := False;
+    MessageDlg('There is a process running', mtError, [mbOK], 0);
+  end;
 end;
 
 procedure TFrmMain.UpdateButtons;
@@ -176,6 +192,25 @@ end;
 procedure TFrmMain.BtnDownClick(Sender: TObject);
 begin
   MoveDefinition(+1);
+end;
+
+procedure TFrmMain.BtnExecuteClick(Sender: TObject);
+var
+  Eng: TEngine;
+begin
+  SetControlsState(False);
+  LLogs.Clear;
+
+  Eng := TEngine.Create;
+  Eng.Start;
+end;
+
+procedure TFrmMain.SetControlsState(Active: Boolean);
+begin
+  EngineRunning := not Active;
+
+  ToolBar.Visible := Active;
+  LDefs.Enabled := Active;
 end;
 
 end.
