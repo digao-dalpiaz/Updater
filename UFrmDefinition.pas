@@ -2,9 +2,10 @@ unit UFrmDefinition;
 
 interface
 
-uses Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, System.Classes,
+uses Vcl.Forms, Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls,
+  System.Classes,
   //
-  UConfig, Vcl.ExtCtrls, Vcl.Buttons;
+  UConfig;
 
 type
   TFrmDefinition = class(TForm)
