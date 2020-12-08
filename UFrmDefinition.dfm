@@ -61,14 +61,14 @@ object FrmDefinition: TFrmDefinition
   object EdSource: TEdit
     Left = 8
     Top = 72
-    Width = 353
+    Width = 593
     Height = 21
     TabOrder = 1
   end
   object EdDestination: TEdit
     Left = 8
     Top = 120
-    Width = 353
+    Width = 593
     Height = 21
     TabOrder = 2
   end

@@ -68,7 +68,7 @@ end;
 
 procedure TFrmDefinition.BtnOKClick(Sender: TObject);
 
-  procedure ValidateEdit(Ed: TEdit; Name: string);
+  procedure ValidateEdit(Ed: TEdit; const Name: string);
   begin
     Ed.Text := Trim(Ed.Text);
     if Ed.Text = string.Empty then
