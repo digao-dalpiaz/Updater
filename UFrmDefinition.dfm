@@ -16,56 +16,56 @@ object FrmDefinition: TFrmDefinition
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
+  object LbName: TLabel
     Left = 8
     Top = 8
     Width = 27
     Height = 13
     Caption = 'Name'
   end
-  object Label2: TLabel
+  object LbSource: TLabel
     Left = 8
     Top = 56
     Width = 33
     Height = 13
     Caption = 'Source'
   end
-  object Label3: TLabel
+  object LbDestination: TLabel
     Left = 8
     Top = 104
     Width = 54
     Height = 13
     Caption = 'Destination'
   end
-  object Label4: TLabel
+  object LbInclusions: TLabel
     Left = 8
     Top = 152
     Width = 47
     Height = 13
     Caption = 'Inclusions'
   end
-  object Label5: TLabel
+  object LbExclusions: TLabel
     Left = 320
     Top = 152
     Width = 49
     Height = 13
     Caption = 'Exclusions'
   end
-  object Bevel1: TBevel
+  object BottomLine: TBevel
     Left = 8
     Top = 424
     Width = 617
     Height = 9
     Shape = bsTopLine
   end
-  object SpeedButton1: TSpeedButton
+  object BtnSourceFolder: TSpeedButton
     Left = 600
     Top = 71
     Width = 25
     Height = 23
     Caption = '...'
   end
-  object SpeedButton2: TSpeedButton
+  object BtnDestinationFolder: TSpeedButton
     Left = 600
     Top = 119
     Width = 25

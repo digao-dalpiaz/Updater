@@ -16,7 +16,7 @@ object FrmMain: TFrmMain
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter1: TSplitter
+  object Splitter: TSplitter
     Left = 0
     Top = 178
     Width = 532
@@ -56,11 +56,10 @@ object FrmMain: TFrmMain
       ImageIndex = 2
       OnClick = BtnRemoveClick
     end
-    object ToolButton4: TToolButton
+    object BtnSeparator1: TToolButton
       Left = 75
       Top = 0
       Width = 8
-      Caption = 'ToolButton4'
       ImageIndex = 3
       Style = tbsSeparator
     end
@@ -78,11 +77,10 @@ object FrmMain: TFrmMain
       ImageIndex = 4
       OnClick = BtnDownClick
     end
-    object ToolButton7: TToolButton
+    object BtnSeparator2: TToolButton
       Left = 133
       Top = 0
       Width = 8
-      Caption = 'ToolButton7'
       ImageIndex = 5
       Style = tbsSeparator
     end
@@ -92,11 +90,10 @@ object FrmMain: TFrmMain
       Caption = 'Masks Tables'
       ImageIndex = 5
     end
-    object ToolButton9: TToolButton
+    object BtnSeparator3: TToolButton
       Left = 166
       Top = 0
       Width = 8
-      Caption = 'ToolButton9'
       ImageIndex = 6
       Style = tbsSeparator
     end
@@ -298,8 +295,8 @@ object FrmMain: TFrmMain
     end
   end
   object IL: TImageList
-    Left = 152
-    Top = 56
+    Left = 392
+    Top = 32
     Bitmap = {
       494C01010B001800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
@@ -705,8 +702,8 @@ object FrmMain: TFrmMain
       000000000000}
   end
   object IL_Disabled: TImageList
-    Left = 208
-    Top = 64
+    Left = 392
+    Top = 80
     Bitmap = {
       494C010105001800040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
@@ -981,8 +978,8 @@ object FrmMain: TFrmMain
   object IL_File: TImageList
     Height = 12
     Width = 12
-    Left = 296
-    Top = 96
+    Left = 392
+    Top = 128
     Bitmap = {
       494C01010300080004000C000C00FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000300000000C00000001002000000000000009

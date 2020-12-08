@@ -9,23 +9,23 @@ uses Vcl.Forms, Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls,
 
 type
   TFrmDefinition = class(TForm)
-    Label1: TLabel;
+    LbName: TLabel;
     EdName: TEdit;
-    Label2: TLabel;
+    LbSource: TLabel;
     EdSource: TEdit;
-    Label3: TLabel;
+    LbDestination: TLabel;
     EdDestination: TEdit;
-    Label4: TLabel;
-    Label5: TLabel;
+    LbInclusions: TLabel;
+    LbExclusions: TLabel;
     EdInclusions: TMemo;
     EdExclusions: TMemo;
     CkRecursive: TCheckBox;
     CkDelete: TCheckBox;
     BtnOK: TButton;
     BtnCancel: TButton;
-    Bevel1: TBevel;
-    SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    BottomLine: TBevel;
+    BtnSourceFolder: TSpeedButton;
+    BtnDestinationFolder: TSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
   private
