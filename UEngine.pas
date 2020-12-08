@@ -20,18 +20,16 @@ type
   protected
     procedure Execute; override;
   private
-    LastTick: Cardinal; //GPU update controller
-    TotalSize, CurrentSize: Int64;
-
     Queue: record
+      LastTick: Cardinal; //GPU update controller
+
       Log: TStringList;
       Status: string;
-      Percent: Byte;
+      TotalSize, CurrentSize: Int64;
     end;
 
     procedure Log(const Text: string; ForceUpdate: Boolean = True);
     procedure Status(const Text: string; ForceUpdate: Boolean = True);
-    procedure Percent(Value: Byte);
 
     procedure DoDefinition(Def: TDefinition);
     procedure CheckForQueueFlush(ForceUpdate: Boolean);
@@ -51,7 +49,6 @@ begin
   inherited Create(True);
   FreeOnTerminate := True;
 
-  LastTick := GetTickCount;
   Queue.Log := TStringList.Create;
 end;
 
@@ -97,16 +94,11 @@ begin
   CheckForQueueFlush(ForceUpdate);
 end;
 
-procedure TEngine.Percent(Value: Byte);
-begin
-  Queue.Percent := Value;
-
-  CheckForQueueFlush(False);
-end;
-
 procedure TEngine.CheckForQueueFlush(ForceUpdate: Boolean);
+var
+  Percent: Byte;
 begin
-  if ForceUpdate or (GetTickCount > LastTick+1000) then
+  if ForceUpdate or (GetTickCount > Queue.LastTick+1000) then
   begin
     Synchronize(
       procedure
@@ -117,10 +109,19 @@ begin
           FrmMain.LLogs.Items.Add(A);
 
         FrmMain.LbStatus.Caption := Queue.Status;
-        FrmMain.ProgressBar.Position := Queue.Percent;
 
-        FrmMain.LbTotalSize.Caption := BytesToMB(TotalSize);
-        FrmMain.LbCurrentSize.Caption := BytesToMB(CurrentSize);
+        if Queue.TotalSize>0 then
+        begin
+          Percent := Trunc(Queue.CurrentSize / Queue.TotalSize * 100);
+
+          FrmMain.ProgressBar.Position := Percent;
+          FrmMain.LbSize.Caption := Format('%s/%s (%d%%)',
+            [BytesToMB(Queue.CurrentSize), BytesToMB(Queue.TotalSize), Percent]);
+        end else
+        begin
+          FrmMain.ProgressBar.Position := 0;
+          FrmMain.LbSize.Caption := string.Empty;
+        end;
 
         if not FrmMain.BtnStop.Enabled then
           raise Exception.Create('Process aborted by user');
@@ -129,7 +130,7 @@ begin
     Queue.Log.Clear;
 
     //
-    LastTick := GetTickCount;
+    Queue.LastTick := GetTickCount;
   end;
 end;
 
@@ -215,6 +216,9 @@ var
   FI: TFileInfo;
   A, SourceFile, DestFile, DestDirectory: string;
 begin
+  Queue.TotalSize := 0;
+  Queue.CurrentSize := 0;
+
   Log('@'+Def.Name);
   Status(string.Empty);
 
@@ -228,13 +232,10 @@ begin
   try
     DoScan(Def, L);
 
-    TotalSize := 0;
-    CurrentSize := 0;
-
     for FI in L do
     begin
       if FI.Operation in [foAppend, foUpdate] then
-        TotalSize := TotalSize + FI.Size;
+        Queue.TotalSize := Queue.TotalSize + FI.Size;
     end;
 
     for FI in L do
@@ -311,8 +312,8 @@ begin
           DestStm.WriteBuffer(Buffer, N);
           Dec(Count, N);
 
-          CurrentSize := CurrentSize + N;
-          Percent(Trunc(CurrentSize / TotalSize * 100));
+          Queue.CurrentSize := Queue.CurrentSize + N;
+          CheckForQueueFlush(False);
         end;
       finally
         SetLength(Buffer, 0);

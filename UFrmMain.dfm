@@ -136,7 +136,6 @@ object FrmMain: TFrmMain
     ParentFont = False
     TabOrder = 2
     OnDrawItem = LLogsDrawItem
-    ExplicitHeight = 250
   end
   object BoxProgress: TPanel
     Left = 0
@@ -146,6 +145,7 @@ object FrmMain: TFrmMain
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 3
+    Visible = False
     object LbStatus: TLabel
       Left = 8
       Top = 8
@@ -154,40 +154,20 @@ object FrmMain: TFrmMain
       Caption = 'LbStatus'
     end
     object BtnStop: TSpeedButton
-      Left = 480
-      Top = 8
-      Width = 25
-      Height = 25
+      Left = 488
+      Top = 0
+      Width = 44
+      Height = 49
+      Align = alRight
       Caption = 'X'
       OnClick = BtnStopClick
     end
-    object Label1: TLabel
-      Left = 336
+    object LbSize: TLabel
+      Left = 168
       Top = 24
-      Width = 50
+      Width = 30
       Height = 13
-      Caption = 'Total Size:'
-    end
-    object LbTotalSize: TLabel
-      Left = 392
-      Top = 24
-      Width = 54
-      Height = 13
-      Caption = 'LbTotalSize'
-    end
-    object Label3: TLabel
-      Left = 176
-      Top = 24
-      Width = 63
-      Height = 13
-      Caption = 'Current Size:'
-    end
-    object LbCurrentSize: TLabel
-      Left = 248
-      Top = 24
-      Width = 67
-      Height = 13
-      Caption = 'LbCurrentSize'
+      Caption = 'LbSize'
     end
     object ProgressBar: TProgressBar
       Left = 8
@@ -201,7 +181,7 @@ object FrmMain: TFrmMain
     Left = 152
     Top = 56
     Bitmap = {
-      494C010107001800040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010107001800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000023505F002756650000000000000000000000
@@ -469,6 +449,7 @@ object FrmMain: TFrmMain
       C00380FFE007F81F8001807FE007F81F8001803FE007F81F0000C01FE007F81F
       0000E00FE007F81F0000F007E007F81F0000F803E00780010000FC01E0078001
       0000FE00E007C0038001FF00C003E0078001FF81C003F00FC003FFC3C003F81F
-      E007FFE7FDBFFC3FF81FFFFFFC3FFE7F}
+      E007FFE7FDBFFC3FF81FFFFFFC3FFE7F00000000000000000000000000000000
+      000000000000}
   end
 end

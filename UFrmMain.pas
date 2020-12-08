@@ -29,10 +29,7 @@ type
     LbStatus: TLabel;
     BtnStop: TSpeedButton;
     ProgressBar: TProgressBar;
-    Label1: TLabel;
-    LbTotalSize: TLabel;
-    Label3: TLabel;
-    LbCurrentSize: TLabel;
+    LbSize: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -66,7 +63,7 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.Windows, Vcl.Dialogs, System.UITypes, Vcl.Graphics,
+uses Winapi.Windows, Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
   UFrmDefinition, UEngine;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
@@ -211,8 +208,15 @@ procedure TFrmMain.BtnExecuteClick(Sender: TObject);
 var
   Eng: TEngine;
 begin
-  SetControlsState(False);
   LLogs.Clear;
+
+  LbStatus.Caption := string.Empty;
+  LbSize.Caption := string.Empty;
+  ProgressBar.Position := 0;
+
+  BtnStop.Enabled := True;
+
+  SetControlsState(False);
 
   Eng := TEngine.Create;
   Eng.Start;
