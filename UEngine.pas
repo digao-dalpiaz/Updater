@@ -2,10 +2,21 @@ unit UEngine;
 
 interface
 
-uses System.Classes, UConfig;
+uses System.Classes, UConfig, System.Generics.Collections;
 
 type
- TEngine = class(TThread)
+  TFileOperation = (foAppend, foUpdate, foDelete);
+  TFileInfo = class
+    RelativePath: string;
+    Operation: TFileOperation;
+
+    Size: Int64;
+
+    constructor Create(const Directory, RelativePath: string; Operation: TFileOperation);
+  end;
+  TLstFileInfo = class(TObjectList<TFileInfo>);
+
+  TEngine = class(TThread)
   protected
     procedure Execute; override;
   private
@@ -25,15 +36,15 @@ type
     procedure DoDefinition(Def: TDefinition);
     procedure CheckForQueueFlush(ForceUpdate: Boolean);
     procedure CopyFile(SourceFile, DestinationFile: string);
+    procedure DoScan(Def: TDefinition; L: TLstFileInfo);
   public
     constructor Create;
     destructor Destroy; override;
- end;
+  end;
 
 implementation
 
-uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek,
-  System.Generics.Collections;
+uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek;
 
 constructor TEngine.Create;
 begin
@@ -108,6 +119,9 @@ begin
         FrmMain.LbStatus.Caption := Queue.Status;
         FrmMain.ProgressBar.Position := Queue.Percent;
 
+        FrmMain.LbTotalSize.Caption := BytesToMB(TotalSize);
+        FrmMain.LbCurrentSize.Caption := BytesToMB(CurrentSize);
+
         if not FrmMain.BtnStop.Enabled then
           raise Exception.Create('Process aborted by user');
       end);
@@ -119,17 +133,6 @@ begin
   end;
 end;
 
-type
-  TFileOperation = (foAppend, foUpdate, foDelete);
-  TFileInfo = class
-    RelativePath: string;
-    Operation: TFileOperation;
-    
-    Size: Int64;
-
-    constructor Create(const Directory, RelativePath: string; Operation: TFileOperation);
-  end;
-
 constructor TFileInfo.Create(const Directory, RelativePath: string; Operation: TFileOperation);
 begin
   Self.RelativePath := RelativePath;
@@ -138,7 +141,7 @@ begin
   Size := GetFileSize(TPath.Combine(Directory, RelativePath));
 end;
 
-procedure TEngine.DoDefinition(Def: TDefinition);
+procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
 
   procedure PrepareDirSeek(DS: TDzDirSeek; const Dir: string; SubDir: Boolean;
     const Inclusions, Exclusions: string);
@@ -157,9 +160,60 @@ procedure TEngine.DoDefinition(Def: TDefinition);
 var
   DS_Src, DS_Dest: TDzDirSeek;
   A: string;
-  L: TObjectList<TFileInfo>;
+begin
+  DS_Src := TDzDirSeek.Create(nil);
+  DS_Dest := TDzDirSeek.Create(nil);
+  try
+    PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions);
+    PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty);
+
+    Status('Scanning source...');
+    DS_Src.Seek;
+
+    Status('Scanning destination...');
+    DS_Dest.Seek;
+
+    Status('Comparing...');
+
+    for A in DS_Src.List do
+    begin
+      if DS_Dest.List.IndexOf(A) = -1 then
+      begin
+        //new file
+        L.Add(TFileInfo.Create(Def.Source, A, foAppend));
+      end else
+      begin
+        //existing file
+        if TFile.GetLastWriteTime(TPath.Combine(Def.Source, A)) <>
+           TFile.GetLastWriteTime(TPath.Combine(Def.Destination, A)) then
+        begin
+          L.Add(TFileInfo.Create(Def.Source, A, foUpdate));
+        end;
+      end;
+    end;
+
+    if Def.Delete then
+    begin
+      for A in DS_Dest.List do
+      begin
+        if DS_Src.List.IndexOf(A) = -1 then
+        begin
+          //removed file
+          L.Add(TFileInfo.Create(Def.Destination, A, foDelete));
+        end;
+      end;
+    end;
+  finally
+    DS_Src.Free;
+    DS_Dest.Free;
+  end;
+end;
+
+procedure TEngine.DoDefinition(Def: TDefinition);
+var
+  L: TLstFileInfo;
   FI: TFileInfo;
-  SourceFile, DestFile, DestDirectory: string;
+  A, SourceFile, DestFile, DestDirectory: string;
 begin
   Log('@'+Def.Name);
   Status(string.Empty);
@@ -170,57 +224,13 @@ begin
   if not TDirectory.Exists(Def.Destination) then
     raise Exception.Create('Destination not found');
 
-  L := TObjectList<TFileInfo>.Create;
+  L := TLstFileInfo.Create;
   try
-    DS_Src := TDzDirSeek.Create(nil);
-    DS_Dest := TDzDirSeek.Create(nil);
-    try
-      PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions);
-      PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty);
+    DoScan(Def, L);
 
-      Status('Scanning source...');
-      DS_Src.Seek;
-
-      Status('Scanning destination...');
-      DS_Dest.Seek;
-
-      Status('Comparing...');
-
-      for A in DS_Src.List do
-      begin        
-        if DS_Dest.List.IndexOf(A) = -1 then
-        begin
-          //new file
-          L.Add(TFileInfo.Create(Def.Source, A, foAppend));          
-        end else
-        begin
-          //existing file
-          if TFile.GetLastWriteTime(TPath.Combine(Def.Source, A)) <>
-             TFile.GetLastWriteTime(TPath.Combine(Def.Destination, A)) then
-          begin
-            L.Add(TFileInfo.Create(Def.Source, A, foUpdate));
-          end;
-        end;
-      end;
-
-      if Def.Delete then
-      begin
-        for A in DS_Dest.List do
-        begin
-          if DS_Src.List.IndexOf(A) = -1 then
-          begin
-            //removed file
-            L.Add(TFileInfo.Create(Def.Source, A, foDelete));
-          end;
-        end;
-      end;
-    finally
-      DS_Src.Free;
-      DS_Dest.Free;
-    end;
-
-    CurrentSize := 0;
     TotalSize := 0;
+    CurrentSize := 0;
+
     for FI in L do
     begin
       if FI.Operation in [foAppend, foUpdate] then
@@ -262,8 +272,13 @@ begin
 
           TFile.Delete(DestFile);
         end;
+
+        else raise Exception.Create('Invalid operation');
       end;
     end;
+
+    if L.Count=0 then Log(':Nothing changed');
+    
   finally
     L.Free;
   end;

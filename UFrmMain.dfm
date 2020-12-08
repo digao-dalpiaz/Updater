@@ -123,7 +123,7 @@ object FrmMain: TFrmMain
     Left = 0
     Top = 183
     Width = 532
-    Height = 257
+    Height = 249
     Style = lbOwnerDrawFixed
     Align = alClient
     Color = 2631720
@@ -136,20 +136,16 @@ object FrmMain: TFrmMain
     ParentFont = False
     TabOrder = 2
     OnDrawItem = LLogsDrawItem
-    ExplicitHeight = 298
+    ExplicitHeight = 250
   end
   object BoxProgress: TPanel
     Left = 0
-    Top = 440
+    Top = 432
     Width = 532
-    Height = 41
+    Height = 49
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 3
-    Visible = False
-    ExplicitLeft = 184
-    ExplicitTop = 240
-    ExplicitWidth = 185
     object LbStatus: TLabel
       Left = 8
       Top = 8
@@ -165,9 +161,37 @@ object FrmMain: TFrmMain
       Caption = 'X'
       OnClick = BtnStopClick
     end
+    object Label1: TLabel
+      Left = 336
+      Top = 24
+      Width = 50
+      Height = 13
+      Caption = 'Total Size:'
+    end
+    object LbTotalSize: TLabel
+      Left = 392
+      Top = 24
+      Width = 54
+      Height = 13
+      Caption = 'LbTotalSize'
+    end
+    object Label3: TLabel
+      Left = 176
+      Top = 24
+      Width = 63
+      Height = 13
+      Caption = 'Current Size:'
+    end
+    object LbCurrentSize: TLabel
+      Left = 248
+      Top = 24
+      Width = 67
+      Height = 13
+      Caption = 'LbCurrentSize'
+    end
     object ProgressBar: TProgressBar
-      Left = 128
-      Top = 16
+      Left = 8
+      Top = 24
       Width = 150
       Height = 17
       TabOrder = 0

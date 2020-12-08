@@ -29,6 +29,10 @@ type
     LbStatus: TLabel;
     BtnStop: TSpeedButton;
     ProgressBar: TProgressBar;
+    Label1: TLabel;
+    LbTotalSize: TLabel;
+    Label3: TLabel;
+    LbCurrentSize: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
