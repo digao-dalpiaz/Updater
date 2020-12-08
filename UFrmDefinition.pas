@@ -67,30 +67,22 @@ begin
 end;
 
 procedure TFrmDefinition.BtnOKClick(Sender: TObject);
+
+  procedure ValidateEdit(Ed: TEdit; Name: string);
+  begin
+    Ed.Text := Trim(Ed.Text);
+    if Ed.Text = string.Empty then
+    begin
+      MessageDlg(Name+' is empty', mtError, [mbOK], 0);
+      Ed.SetFocus;
+      Abort;
+    end;
+  end;
+
 begin
-  EdName.Text := Trim(EdName.Text);
-  if EdName.Text = string.Empty then
-  begin
-    MessageDlg('Name is empty', mtError, [mbOK], 0);
-    EdName.SetFocus;
-    Exit;
-  end;
-
-  EdSource.Text := Trim(EdSource.Text);
-  if EdSource.Text = string.Empty then
-  begin
-    MessageDlg('Source is empty', mtError, [mbOK], 0);
-    EdSource.SetFocus;
-    Exit;
-  end;
-
-  EdDestination.Text := Trim(EdDestination.Text);
-  if EdDestination.Text = string.Empty then
-  begin
-    MessageDlg('Destination is empty', mtError, [mbOK], 0);
-    EdDestination.SetFocus;
-    Exit;
-  end;
+  ValidateEdit(EdName, 'Name');
+  ValidateEdit(EdSource, 'Source');
+  ValidateEdit(EdDestination, 'Destination');
 
   //
 
