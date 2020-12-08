@@ -68,12 +68,12 @@ begin
     WP.length := SizeOf(WP);
     GetWindowPlacement(FrmMain.Handle, WP);
 
-    R.WriteInteger('Max', Integer(FrmMain.WindowState=TWindowState.wsMaximized));
-
     R.WriteInteger('X', WP.rcNormalPosition.Left);
     R.WriteInteger('Y', WP.rcNormalPosition.Top);
     R.WriteInteger('W', WP.rcNormalPosition.Width);
     R.WriteInteger('H', WP.rcNormalPosition.Height);
+
+    R.WriteInteger('Max', Integer(FrmMain.WindowState=TWindowState.wsMaximized));
 
     R.WriteInteger('DefinitionsHeight', FrmMain.LDefs.Height);
   finally
