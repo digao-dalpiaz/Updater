@@ -48,7 +48,8 @@ implementation
 
 {$R *.dfm}
 
-uses UFrmDefinition, System.SysUtils;
+uses UFrmDefinition, System.SysUtils,
+  Vcl.Dialogs, System.UITypes;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -144,11 +145,14 @@ var
   D: TDefinition;
 begin
   D := GetSelectedDefinition;
+  if MessageDlg('Do you want to remove definition "'+D.Name+'"?',
+    mtConfirmation, mbYesNo, 0) = mrYes then
+  begin
+    Config.LstDefinition.Remove(D);
+    LDefs.DeleteSelected;
 
-  Config.LstDefinition.Remove(D);
-  LDefs.DeleteSelected;
-
-  UpdateButtons;
+    UpdateButtons;
+  end;
 end;
 
 procedure TFrmMain.MoveDefinition(Flag: Integer);

@@ -38,6 +38,8 @@ implementation
 
 {$R *.dfm}
 
+uses System.SysUtils, Vcl.Dialogs, System.UITypes;
+
 function DoEditDefinition;
 begin
   FrmDefinition := TFrmDefinition.Create(Application);
@@ -66,6 +68,32 @@ end;
 
 procedure TFrmDefinition.BtnOKClick(Sender: TObject);
 begin
+  EdName.Text := Trim(EdName.Text);
+  if EdName.Text = string.Empty then
+  begin
+    MessageDlg('Name is empty', mtError, [mbOK], 0);
+    EdName.SetFocus;
+    Exit;
+  end;
+
+  EdSource.Text := Trim(EdSource.Text);
+  if EdSource.Text = string.Empty then
+  begin
+    MessageDlg('Source is empty', mtError, [mbOK], 0);
+    EdSource.SetFocus;
+    Exit;
+  end;
+
+  EdDestination.Text := Trim(EdDestination.Text);
+  if EdDestination.Text = string.Empty then
+  begin
+    MessageDlg('Destination is empty', mtError, [mbOK], 0);
+    EdDestination.SetFocus;
+    Exit;
+  end;
+
+  //
+
   if not Edit then
   begin
     Def := TDefinition.Create;
