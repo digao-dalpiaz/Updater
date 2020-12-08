@@ -28,6 +28,8 @@ type
     BtnDestinationFolder: TSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
+    procedure BtnSourceFolderClick(Sender: TObject);
+    procedure BtnDestinationFolderClick(Sender: TObject);
   private
     Edit: Boolean;
     Def: TDefinition;
@@ -42,7 +44,7 @@ implementation
 
 {$R *.dfm}
 
-uses System.SysUtils, Vcl.Dialogs, System.UITypes;
+uses System.SysUtils, Vcl.Dialogs, System.UITypes, Vcl.FileCtrl;
 
 function DoEditDefinition;
 begin
@@ -105,6 +107,24 @@ begin
   Def.Delete := CkDelete.Checked;
 
   ModalResult := mrOk;
+end;
+
+procedure TFrmDefinition.BtnSourceFolderClick(Sender: TObject);
+var
+  Dir: string;
+begin
+  Dir := EdSource.Text;
+  if SelectDirectory('Source folder:', '', Dir) then
+    EdSource.Text := Dir;
+end;
+
+procedure TFrmDefinition.BtnDestinationFolderClick(Sender: TObject);
+var
+  Dir: string;
+begin
+  Dir := EdDestination.Text;
+  if SelectDirectory('Destination folder:', '', Dir) then
+    EdDestination.Text := Dir;
 end;
 
 end.

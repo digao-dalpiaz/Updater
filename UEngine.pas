@@ -244,7 +244,10 @@ begin
     raise Exception.Create('Source not found');
 
   if not TDirectory.Exists(Def.Destination) then
-    raise Exception.Create('Destination not found');
+  begin
+    if not ForceDirectories(Def.Destination) then
+      raise Exception.Create('Cannot create root destination folder');
+  end;
 
   L := TLstFileInfo.Create;
   try
@@ -309,7 +312,10 @@ begin
 
   DestDirectory := ExtractFilePath(DestFile);
   if not TDirectory.Exists(DestDirectory) then
-    ForceDirectories(DestDirectory);
+  begin
+    if not ForceDirectories(DestDirectory) then
+      raise Exception.Create('Cannot create destination folder');
+  end;
 
   SourceStm := TFileStream.Create(SourceFile, fmOpenRead);
   try

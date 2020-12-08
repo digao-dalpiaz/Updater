@@ -64,6 +64,7 @@ object FrmDefinition: TFrmDefinition
     Width = 25
     Height = 23
     Caption = '...'
+    OnClick = BtnSourceFolderClick
   end
   object BtnDestinationFolder: TSpeedButton
     Left = 600
@@ -71,6 +72,7 @@ object FrmDefinition: TFrmDefinition
     Width = 25
     Height = 23
     Caption = '...'
+    OnClick = BtnDestinationFolderClick
   end
   object EdName: TEdit
     Left = 8
