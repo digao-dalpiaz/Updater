@@ -10,6 +10,7 @@ type
     procedure Execute; override;
   private
     LastTick: Cardinal; //GPU update controller
+    TotalSize, CurrentSize: Int64;
 
     Queue: record
       Log: TStringList;
@@ -31,7 +32,8 @@ type
 
 implementation
 
-uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek;
+uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek,
+  System.Generics.Collections;
 
 constructor TEngine.Create;
 begin
@@ -117,6 +119,25 @@ begin
   end;
 end;
 
+type
+  TFileOperation = (foAppend, foUpdate, foDelete);
+  TFileInfo = class
+    RelativePath: string;
+    Operation: TFileOperation;
+    
+    Size: Int64;
+
+    constructor Create(const Directory, RelativePath: string; Operation: TFileOperation);
+  end;
+
+constructor TFileInfo.Create(const Directory, RelativePath: string; Operation: TFileOperation);
+begin
+  Self.RelativePath := RelativePath;
+  Self.Operation := Operation;
+    
+  Size := GetFileSize(TPath.Combine(Directory, RelativePath));
+end;
+
 procedure TEngine.DoDefinition(Def: TDefinition);
 
   procedure PrepareDirSeek(DS: TDzDirSeek; const Dir: string; SubDir: Boolean;
@@ -136,7 +157,9 @@ procedure TEngine.DoDefinition(Def: TDefinition);
 var
   DS_Src, DS_Dest: TDzDirSeek;
   A: string;
-  SourceFile, DestFile: string;
+  L: TObjectList<TFileInfo>;
+  FI: TFileInfo;
+  SourceFile, DestFile, DestDirectory: string;
 begin
   Log('@'+Def.Name);
   Status(string.Empty);
@@ -147,72 +170,105 @@ begin
   if not TDirectory.Exists(Def.Destination) then
     raise Exception.Create('Destination not found');
 
-  DS_Src := TDzDirSeek.Create(nil);
-  DS_Dest := TDzDirSeek.Create(nil);
+  L := TObjectList<TFileInfo>.Create;
   try
-    PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions);
-    PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty);
+    DS_Src := TDzDirSeek.Create(nil);
+    DS_Dest := TDzDirSeek.Create(nil);
+    try
+      PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions);
+      PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty);
 
-    Status('Scanning source...');
-    DS_Src.Seek;
+      Status('Scanning source...');
+      DS_Src.Seek;
 
-    Status('Scanning destination...');
-    DS_Dest.Seek;
+      Status('Scanning destination...');
+      DS_Dest.Seek;
 
-    Status(string.Empty);
+      Status('Comparing...');
 
-    for A in DS_Src.List do
+      for A in DS_Src.List do
+      begin        
+        if DS_Dest.List.IndexOf(A) = -1 then
+        begin
+          //new file
+          L.Add(TFileInfo.Create(Def.Source, A, foAppend));          
+        end else
+        begin
+          //existing file
+          if TFile.GetLastWriteTime(TPath.Combine(Def.Source, A)) <>
+             TFile.GetLastWriteTime(TPath.Combine(Def.Destination, A)) then
+          begin
+            L.Add(TFileInfo.Create(Def.Source, A, foUpdate));
+          end;
+        end;
+      end;
+
+      if Def.Delete then
+      begin
+        for A in DS_Dest.List do
+        begin
+          if DS_Src.List.IndexOf(A) = -1 then
+          begin
+            //removed file
+            L.Add(TFileInfo.Create(Def.Source, A, foDelete));
+          end;
+        end;
+      end;
+    finally
+      DS_Src.Free;
+      DS_Dest.Free;
+    end;
+
+    CurrentSize := 0;
+    TotalSize := 0;
+    for FI in L do
     begin
+      if FI.Operation in [foAppend, foUpdate] then
+        TotalSize := TotalSize + FI.Size;
+    end;
+
+    for FI in L do
+    begin
+      A := FI.RelativePath;
+
       SourceFile := TPath.Combine(Def.Source, A);
       DestFile := TPath.Combine(Def.Destination, A);
 
-      if DS_Dest.List.IndexOf(A) = -1 then
-      begin
-        //new file
-        Log('+'+A, False);
-        Status('Appending '+A, False);
+      case FI.Operation of
+        foAppend:
+        begin
+          Log('+'+A, False);
+          Status('Appending '+A, False);
 
-        if not TDirectory.Exists(ExtractFilePath(DestFile)) then
-          ForceDirectories(ExtractFilePath(DestFile));
+          DestDirectory := ExtractFilePath(DestFile);
+          if not TDirectory.Exists(DestDirectory) then
+            ForceDirectories(DestDirectory);
 
-        CopyFile(SourceFile, DestFile);
-      end else
-      begin
-        //existent file
-        if TFile.GetLastWriteTime(SourceFile) <>
-           TFile.GetLastWriteTime(DestFile) then
+          CopyFile(SourceFile, DestFile);
+        end;
+
+        foUpdate:
         begin
           Log('~'+A, False);
           Status('Updating '+A, False);
 
           CopyFile(SourceFile, DestFile);
         end;
-      end;
 
-      Status(string.Empty, False);
-      Percent(0);
-    end;
-
-    if Def.Delete then
-    begin
-      for A in DS_Dest.List do
-      begin
-        if DS_Src.List.IndexOf(A) = -1 then
+        foDelete:
         begin
-          //removed file
           Log('-'+A, False);
           Status('Deleting '+A, False);
 
-          TFile.Delete(TPath.Combine(Def.Destination, A));
+          TFile.Delete(DestFile);
         end;
       end;
     end;
-
   finally
-    DS_Src.Free;
-    DS_Dest.Free;
+    L.Free;
   end;
 
+  //update definition timestamp
   Def.LastUpdate := Now;
 end;
 
@@ -240,7 +296,8 @@ begin
           DestStm.WriteBuffer(Buffer, N);
           Dec(Count, N);
 
-          Percent(Trunc(DestStm.Size / SourceStm.Size * 100));
+          CurrentSize := CurrentSize + N;
+          Percent(Trunc(CurrentSize / TotalSize * 100));
         end;
       finally
         SetLength(Buffer, 0);

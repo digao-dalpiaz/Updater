@@ -2,10 +2,11 @@ unit UFrmMain;
 
 interface
 
-uses Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls, Vcl.CheckLst,
-  System.ImageList, Vcl.ImgList, Vcl.ComCtrls, System.Classes, Vcl.ToolWin,
+uses Vcl.Forms, Vcl.ComCtrls, Vcl.Buttons, Vcl.StdCtrls, Vcl.Controls,
+  Vcl.ExtCtrls, Vcl.CheckLst, System.ImageList, Vcl.ImgList, System.Classes,
+  Vcl.ToolWin,
   //
-  UConfig, System.Types, Vcl.Buttons;
+  UConfig, System.Types;
 
 type
   TFrmMain = class(TForm)
@@ -61,9 +62,8 @@ implementation
 
 {$R *.dfm}
 
-uses UFrmDefinition, System.SysUtils, Winapi.Windows,
-  Vcl.Dialogs, System.UITypes, Vcl.Graphics,
-  UEngine;
+uses Winapi.Windows, Vcl.Dialogs, System.UITypes, Vcl.Graphics,
+  UFrmDefinition, UEngine;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
