@@ -114,7 +114,7 @@ var
   Dir: string;
 begin
   Dir := EdSource.Text;
-  if SelectDirectory('Source folder:', '', Dir) then
+  if SelectDirectory('Source folder:', string.Empty, Dir) then
     EdSource.Text := Dir;
 end;
 
@@ -123,7 +123,7 @@ var
   Dir: string;
 begin
   Dir := EdDestination.Text;
-  if SelectDirectory('Destination folder:', '', Dir) then
+  if SelectDirectory('Destination folder:', string.Empty, Dir) then
     EdDestination.Text := Dir;
 end;
 
