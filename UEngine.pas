@@ -162,7 +162,12 @@ procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
 var
   DS_Src, DS_Dest: TDzDirSeek;
   A: string;
+  xAdd, xMod, xDel: Integer;
 begin
+  xAdd := 0;
+  xMod := 0;
+  xDel := 0;
+
   DS_Src := TDzDirSeek.Create(nil);
   DS_Dest := TDzDirSeek.Create(nil);
   try
@@ -183,6 +188,7 @@ begin
       begin
         //new file
         L.Add(TFileInfo.Create(Def.Source, A, foAppend));
+        Inc(xAdd);
       end else
       begin
         //existing file
@@ -190,6 +196,7 @@ begin
            TFile.GetLastWriteTime(TPath.Combine(Def.Destination, A)) then
         begin
           L.Add(TFileInfo.Create(Def.Source, A, foUpdate));
+          Inc(xMod);
         end;
       end;
     end;
@@ -202,6 +209,7 @@ begin
         begin
           //removed file
           L.Add(TFileInfo.Create(Def.Destination, A, foDelete));
+          Inc(xDel);
         end;
       end;
     end;
@@ -209,6 +217,15 @@ begin
     DS_Src.Free;
     DS_Dest.Free;
   end;
+
+  A := string.Empty;
+  if xAdd>0 then A := A + Format(', New: %d', [xAdd]);
+  if xMod>0 then A := A + Format(', Modified: %d', [xMod]);
+  if xDel>0 then A := A + Format(', Deleted: %d', [xDel]);
+  Delete(A, 1, 2);
+
+  if A<>string.Empty then
+    Log(':'+A);
 end;
 
 procedure TEngine.DoDefinition(Def: TDefinition);

@@ -31,6 +31,7 @@ type
     ProgressBar: TProgressBar;
     LbSize: TLabel;
     IL_Disabled: TImageList;
+    IL_File: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -241,21 +242,44 @@ procedure TFrmMain.LLogsDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   A: string;
+  IdxFile: Integer;
+  Color: TColor;
 begin
   if odSelected in State then LLogs.Canvas.Brush.Color := clBlack;
   LLogs.Canvas.FillRect(Rect);
 
+  IdxFile := -1;
+
   A := LLogs.Items[Index];
   case A[1] of
-    '@': LLogs.Canvas.Font.Style := [fsBold];
-    '#': LLogs.Canvas.Font.Color := $006C6CFF;
-    '+': LLogs.Canvas.Font.Color := $0000D900;
-    '~': LLogs.Canvas.Font.Color := $00C7B96D;
-    '-': LLogs.Canvas.Font.Color := $009A9A9A;
+    '@': Color := clWhite; //definition title
+    ':': Color := clSilver; //general info
+    '#': Color := $006C6CFF; //error
+    '+': begin
+           Color := $0000D900;
+           IdxFile := 0;
+         end;
+    '~': begin
+           Color := $00C7B96D;
+           IdxFile := 1;
+         end;
+    '-': begin
+           Color := $009A9A9A;
+           IdxFile := 2;
+         end;
+    else raise Exception.Create('Invalid log prefix');
   end;
 
   Delete(A, 1, 1);
-  LLogs.Canvas.TextOut(Rect.Left+2, Rect.Top, A);
+
+  LLogs.Canvas.Font.Color := Color;
+
+  if IdxFile<>-1 then
+  begin
+    IL_File.Draw(LLogs.Canvas, 3, Rect.Top+1, IdxFile);
+    LLogs.Canvas.TextOut(18, Rect.Top, A);
+  end else
+    LLogs.Canvas.TextOut(3, Rect.Top, A);
 end;
 
 end.

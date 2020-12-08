@@ -3,8 +3,8 @@ object FrmDefinition: TFrmDefinition
   Top = 0
   BorderStyle = bsDialog
   Caption = 'New Definition'
-  ClientHeight = 481
-  ClientWidth = 638
+  ClientHeight = 467
+  ClientWidth = 633
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -39,17 +39,38 @@ object FrmDefinition: TFrmDefinition
   end
   object Label4: TLabel
     Left = 8
-    Top = 160
+    Top = 152
     Width = 47
     Height = 13
     Caption = 'Inclusions'
   end
   object Label5: TLabel
     Left = 320
-    Top = 160
+    Top = 152
     Width = 49
     Height = 13
     Caption = 'Exclusions'
+  end
+  object Bevel1: TBevel
+    Left = 8
+    Top = 424
+    Width = 617
+    Height = 9
+    Shape = bsTopLine
+  end
+  object SpeedButton1: TSpeedButton
+    Left = 600
+    Top = 71
+    Width = 25
+    Height = 23
+    Caption = '...'
+  end
+  object SpeedButton2: TSpeedButton
+    Left = 600
+    Top = 119
+    Width = 25
+    Height = 23
+    Caption = '...'
   end
   object EdName: TEdit
     Left = 8
@@ -74,22 +95,18 @@ object FrmDefinition: TFrmDefinition
   end
   object EdInclusions: TMemo
     Left = 8
-    Top = 176
+    Top = 168
     Width = 305
-    Height = 185
-    Lines.Strings = (
-      'EdInclusions')
+    Height = 193
     ScrollBars = ssBoth
     TabOrder = 3
     WordWrap = False
   end
   object EdExclusions: TMemo
     Left = 320
-    Top = 176
+    Top = 168
     Width = 305
-    Height = 185
-    Lines.Strings = (
-      'Memo1')
+    Height = 193
     ScrollBars = ssBoth
     TabOrder = 4
     WordWrap = False
@@ -112,18 +129,18 @@ object FrmDefinition: TFrmDefinition
   end
   object BtnOK: TButton
     Left = 232
-    Top = 440
+    Top = 432
     Width = 81
-    Height = 25
+    Height = 29
     Caption = 'OK'
     TabOrder = 7
     OnClick = BtnOKClick
   end
   object BtnCancel: TButton
     Left = 320
-    Top = 440
+    Top = 432
     Width = 81
-    Height = 25
+    Height = 29
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 8

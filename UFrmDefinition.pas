@@ -4,7 +4,7 @@ interface
 
 uses Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, System.Classes,
   //
-  UConfig;
+  UConfig, Vcl.ExtCtrls, Vcl.Buttons;
 
 type
   TFrmDefinition = class(TForm)
@@ -22,6 +22,9 @@ type
     CkDelete: TCheckBox;
     BtnOK: TButton;
     BtnCancel: TButton;
+    Bevel1: TBevel;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
   private
