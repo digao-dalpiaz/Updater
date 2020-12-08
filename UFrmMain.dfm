@@ -123,13 +123,40 @@ object FrmMain: TFrmMain
     Left = 0
     Top = 183
     Width = 532
-    Height = 298
+    Height = 257
     Style = lbOwnerDrawFixed
     Align = alClient
-    Color = clInfoBk
+    Color = 2631720
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ItemHeight = 14
+    ParentFont = False
     TabOrder = 2
-    ExplicitTop = 181
-    ExplicitHeight = 300
+    OnDrawItem = LLogsDrawItem
+    ExplicitHeight = 298
+  end
+  object BoxProgress: TPanel
+    Left = 0
+    Top = 440
+    Width = 532
+    Height = 41
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 3
+    Visible = False
+    ExplicitLeft = 184
+    ExplicitTop = 240
+    ExplicitWidth = 185
+    object LbStatus: TLabel
+      Left = 8
+      Top = 8
+      Width = 42
+      Height = 13
+      Caption = 'LbStatus'
+    end
   end
   object IL: TImageList
     Left = 152

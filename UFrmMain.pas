@@ -5,7 +5,7 @@ interface
 uses Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls, Vcl.CheckLst,
   System.ImageList, Vcl.ImgList, Vcl.ComCtrls, System.Classes, Vcl.ToolWin,
   //
-  UConfig;
+  UConfig, System.Types;
 
 type
   TFrmMain = class(TForm)
@@ -24,6 +24,8 @@ type
     LDefs: TCheckListBox;
     LLogs: TListBox;
     Splitter1: TSplitter;
+    BoxProgress: TPanel;
+    LbStatus: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -35,6 +37,8 @@ type
     procedure LDefsClickCheck(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure BtnExecuteClick(Sender: TObject);
+    procedure LLogsDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState);
   private
     EngineRunning: Boolean;
 
@@ -54,12 +58,14 @@ implementation
 
 {$R *.dfm}
 
-uses UFrmDefinition, System.SysUtils,
-  Vcl.Dialogs, System.UITypes,
+uses UFrmDefinition, System.SysUtils, Winapi.Windows,
+  Vcl.Dialogs, System.UITypes, Vcl.Graphics,
   UEngine;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
+  ReportMemoryLeaksOnShutdown := True;
+
   Config := TConfig.Create;
   Config.LoadDefinitions;
 
@@ -208,9 +214,31 @@ end;
 procedure TFrmMain.SetControlsState(Active: Boolean);
 begin
   EngineRunning := not Active;
+  BoxProgress.Visible := not Active;
 
   ToolBar.Visible := Active;
   LDefs.Enabled := Active;
+end;
+
+procedure TFrmMain.LLogsDrawItem(Control: TWinControl; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState);
+var
+  A: string;
+begin
+  if odSelected in State then LLogs.Canvas.Brush.Color := clBlack;
+  LLogs.Canvas.FillRect(Rect);
+
+  A := LLogs.Items[Index];
+  case A[1] of
+    '@': LLogs.Canvas.Font.Style := [fsBold];
+    '#': LLogs.Canvas.Font.Color := $006C6CFF;
+    '+': LLogs.Canvas.Font.Color := $0000D900;
+    '~': LLogs.Canvas.Font.Color := $00C7B96D;
+    '-': LLogs.Canvas.Font.Color := $009A9A9A;
+  end;
+
+  Delete(A, 1, 1);
+  LLogs.Canvas.TextOut(Rect.Left+2, Rect.Top, A);
 end;
 
 end.

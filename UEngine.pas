@@ -10,11 +10,14 @@ type
     procedure Execute; override;
   private
     LogQueue: TStringList;
+    StatusQueue: string;    
     LastTick: Cardinal;
-    procedure Log(const Text: string);
+    procedure Log(const Text: string; ForceUpdate: Boolean = True);
+    procedure Status(const Text: string; ForceUpdate: Boolean = True);
     procedure PrintLogQueue;
 
     procedure DoDefinition(Def: TDefinition);
+    procedure CheckForQueueFlush(ForceUpdate: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -55,19 +58,31 @@ begin
       if D.Checked then DoDefinition(D);
   except
     on E: Exception do
-      Log('ERROR: '+E.Message);
+      Log('#ERROR: '+E.Message);
   end;
 
   PrintLogQueue; //remaining log
 end;
 
-procedure TEngine.Log(const Text: string);
+procedure TEngine.Log(const Text: string; ForceUpdate: Boolean);
 begin
   LogQueue.Add(Text);
 
-  if GetTickCount > LastTick+1000 then
+  CheckForQueueFlush(ForceUpdate);
+end;
+
+procedure TEngine.Status(const Text: string; ForceUpdate: Boolean);
+begin
+  StatusQueue := Text;
+
+  CheckForQueueFlush(ForceUpdate);
+end;
+
+procedure TEngine.CheckForQueueFlush(ForceUpdate: Boolean);
+begin
+  if ForceUpdate or (GetTickCount > LastTick+1000) then
   begin
-    PrintLogQueue;
+    PrintLogQueue;    
 
     LastTick := GetTickCount;
   end;
@@ -82,6 +97,8 @@ begin
     begin
       for A in LogQueue do
         FrmMain.LLogs.Items.Add(A);
+
+      FrmMain.LbStatus.Caption := StatusQueue;
     end);
 
   LogQueue.Clear;
@@ -99,12 +116,16 @@ procedure TEngine.DoDefinition(Def: TDefinition);
     DS.UseMask := True;
     DS.Inclusions.Text := Inclusions;
     DS.Exclusions.Text := Exclusions;
+
+    DS.List.CaseSensitive := False;
   end;
 
 var
   DS_Src, DS_Dest: TDzDirSeek;
+  A: string;
 begin
-  Log(Def.Name);
+  Log('@'+Def.Name);
+  Status(string.Empty);
 
   if not TDirectory.Exists(Def.Source) then
     raise Exception.Create('Source not found');
@@ -118,14 +139,37 @@ begin
     PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions);
     PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty);
 
-    Log('Scanning source...');
+    Status('Scanning source...');
     DS_Src.Seek;
 
-    Log('Scanning destination...');
+    Status('Scanning destination...');
     DS_Dest.Seek;
 
-    Log('Comparing...');
+    Status('Comparing...');      
 
+    for A in DS_Src.List do
+    begin
+      if DS_Dest.List.IndexOf(A) = -1 then
+      begin
+        //new file
+        Log('+'+A, False);
+      end else
+      begin
+        //existent file
+        if TFile.GetLastWriteTime(TPath.Combine(DS_Src.Dir, A)) <>
+           TFile.GetLastWriteTime(TPath.Combine(DS_Dest.Dir, A)) then
+          Log('~'+A, False);
+      end;
+    end;  
+
+    for A in DS_Dest.List do
+    begin
+      if DS_Src.List.IndexOf(A) = -1 then
+      begin
+        //removed file
+        Log('-'+A, False);
+      end;
+    end;
 
   finally
     DS_Src.Free;
