@@ -106,8 +106,19 @@ begin
       var
         A: string;
       begin
-        for A in Queue.Log do
-          FrmMain.LLogs.Items.Add(A);
+        if Queue.Log.Count>0 then
+        begin
+          //FrmMain.LLogs.Items.BeginUpdate;
+          try
+            for A in Queue.Log do
+              FrmMain.LLogs.Items.Add(A);
+          finally
+            //FrmMain.LLogs.Items.EndUpdate;
+          end;
+          FrmMain.LLogs.TopIndex := FrmMain.LLogs.Count-1;
+
+          Queue.Log.Clear;
+        end;
 
         FrmMain.LbStatus.Caption := Queue.Status;
 
@@ -127,8 +138,6 @@ begin
         if not FrmMain.BtnStop.Enabled then
           raise Exception.Create('Process aborted by user');
       end);
-
-    Queue.Log.Clear;
 
     //
     Queue.LastTick := GetTickCount;

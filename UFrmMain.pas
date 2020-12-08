@@ -10,17 +10,6 @@ uses Vcl.Forms, Vcl.ComCtrls, Vcl.Buttons, Vcl.StdCtrls, Vcl.Controls,
 
 type
   TFrmMain = class(TForm)
-    ToolBar: TToolBar;
-    BtnNew: TToolButton;
-    BtnEdit: TToolButton;
-    BtnRemove: TToolButton;
-    BtnSeparator1: TToolButton;
-    BtnUp: TToolButton;
-    BtnDown: TToolButton;
-    BtnSeparator2: TToolButton;
-    BtnMasks: TToolButton;
-    BtnSeparator3: TToolButton;
-    BtnExecute: TToolButton;
     IL: TImageList;
     LDefs: TCheckListBox;
     LLogs: TListBox;
@@ -32,6 +21,21 @@ type
     LbSize: TLabel;
     IL_Disabled: TImageList;
     IL_File: TImageList;
+    BoxTop: TPanel;
+    ToolBar: TToolBar;
+    BtnNew: TToolButton;
+    BtnEdit: TToolButton;
+    BtnRemove: TToolButton;
+    BtnSeparator1: TToolButton;
+    BtnUp: TToolButton;
+    BtnDown: TToolButton;
+    BtnSeparator2: TToolButton;
+    BtnMasks: TToolButton;
+    BtnSeparator3: TToolButton;
+    BtnExecute: TToolButton;
+    BoxAbout: TPanel;
+    LbDigao: TLinkLabel;
+    LbVersion: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -49,6 +53,8 @@ type
     procedure LDefsDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState);
     procedure FormResize(Sender: TObject);
+    procedure LbDigaoLinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
   private
     EngineRunning: Boolean;
 
@@ -69,7 +75,8 @@ implementation
 {$R *.dfm}
 
 uses Winapi.Windows, Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
-  UFrmDefinition, UEngine, URegistry;
+  UFrmDefinition, UEngine, URegistry,
+  Winapi.ShellAPI;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -105,6 +112,12 @@ end;
 procedure TFrmMain.FormResize(Sender: TObject);
 begin
   LDefs.Invalidate;
+end;
+
+procedure TFrmMain.LbDigaoLinkClick(Sender: TObject; const Link: string;
+  LinkType: TSysLinkType);
+begin
+  ShellExecute(0, '', PChar(Link), '', '', SW_SHOWNORMAL);
 end;
 
 procedure TFrmMain.UpdateButtons;
