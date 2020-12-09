@@ -12,10 +12,10 @@ The app is under development right now.
 ## To Do
 
 - ToolBar hidden when process running may look strange?
-- Splitter locked when process running because CheckListBox disabled.
+- ~~Splitter locked when process running because CheckListBox disabled.~~
 - Deleted files are internally getting size but never used.
 - Implement Masks Tables.
 - Help info in inclusions/exclusions memo.
 - Allow comments in inclusions/exclusions masks.
 - Show total size on files report (New/Modified and Deleted).
-- Change app theme?
+- ~~Change app theme.~~
