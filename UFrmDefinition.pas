@@ -30,6 +30,7 @@ type
     procedure BtnOKClick(Sender: TObject);
     procedure BtnSourceFolderClick(Sender: TObject);
     procedure BtnDestinationFolderClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     Edit: Boolean;
     Def: TDefinition;
@@ -54,6 +55,11 @@ begin
   Result := FrmDefinition.ShowModal = mrOk;
   if Result then Def := FrmDefinition.Def;  
   FrmDefinition.Free;
+end;
+
+procedure TFrmDefinition.FormCreate(Sender: TObject);
+begin
+  Width := Width+8; //fix theme behavior
 end;
 
 procedure TFrmDefinition.FormShow(Sender: TObject);
