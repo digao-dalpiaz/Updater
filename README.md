@@ -11,7 +11,7 @@ The app is under development right now.
 
 ## To Do
 
-- ToolBar hidden when process running may be strange?
+- ToolBar hidden when process running may look strange?
 - Splitter locked when process running because CheckListBox disabled.
 - Deleted files are internally getting size but never used.
 - Implement Masks Tables.
