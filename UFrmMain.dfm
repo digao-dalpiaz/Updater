@@ -50,7 +50,7 @@ object FrmMain: TFrmMain
     BorderStyle = bsNone
     Color = clBtnFace
     Font.Charset = ANSI_CHARSET
-    Font.Color = clWhite
+    Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Segoe UI'
     Font.Style = []
@@ -202,12 +202,6 @@ object FrmMain: TFrmMain
       Width = 30
       Height = 13
       Caption = 'LbSize'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = 2990660
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object ProgressBar: TProgressBar
       Left = 8
