@@ -17,3 +17,4 @@ The app is under development right now.
 - Implement Masks Tables.
 - Help info in inclusions/exclusions memo.
 - Allow comments in inclusions/exclusions masks.
+- Show total size on files report (New/Modified and Deleted).
