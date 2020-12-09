@@ -152,22 +152,18 @@ procedure TFrmMain.LDefsDrawItem(Control: TWinControl; Index: Integer;
 var
   D: TDefinition;
 begin
-  if odSelected in State then LDefs.Canvas.Brush.Color := $005CC5FC;
+  if odSelected in State then LDefs.Canvas.Brush.Color := $00984603;
   LDefs.Canvas.FillRect(Rect);
 
   D := TDefinition(LDefs.Items.Objects[Index]);
 
-  LDefs.Canvas.Font.Color := clBlack;
+  LDefs.Canvas.Font.Color := clWhite;
   LDefs.Canvas.TextOut(Rect.Left+2, Rect.Top+2, D.Name);
   if D.LastUpdate>0 then
   begin
     LDefs.Canvas.Font.Color := clGray;
     LDefs.Canvas.TextOut(Rect.Right-110, Rect.Top+2, DateTimeToStr(D.LastUpdate));
   end;
-
-  //avoid incorrect focus color
-  LDefs.Canvas.Font.Color := clBlack;
-  LDefs.Canvas.TextOut(0, 0, string.Empty);
 end;
 
 function TFrmMain.GetSelectedDefinition: TDefinition;

@@ -33,12 +33,12 @@ object FrmMain: TFrmMain
     Height = 153
     OnClickCheck = LDefsClickCheck
     Align = alTop
+    BorderStyle = bsNone
     ItemHeight = 18
     Style = lbOwnerDrawFixed
     TabOrder = 1
     OnClick = LDefsClick
     OnDrawItem = LDefsDrawItem
-    ExplicitTop = 25
   end
   object LLogs: TListBox
     Left = 0
@@ -48,7 +48,7 @@ object FrmMain: TFrmMain
     Style = lbOwnerDrawFixed
     Align = alClient
     BorderStyle = bsNone
-    Color = 2631720
+    Color = clBtnFace
     Font.Charset = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -11
@@ -58,8 +58,6 @@ object FrmMain: TFrmMain
     ParentFont = False
     TabOrder = 2
     OnDrawItem = LLogsDrawItem
-    ExplicitTop = 183
-    ExplicitHeight = 249
   end
   object BoxProgress: TPanel
     Left = 0
@@ -239,7 +237,6 @@ object FrmMain: TFrmMain
       DisabledImages = IL_Disabled
       Images = IL
       TabOrder = 0
-      ExplicitWidth = 347
       object BtnNew: TToolButton
         Left = 0
         Top = 0
