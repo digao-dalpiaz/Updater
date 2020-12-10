@@ -43,7 +43,7 @@ type
 
 implementation
 
-uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek;
+uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek, UMasks;
 
 constructor TEngine.Create;
 begin
@@ -172,8 +172,8 @@ procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
     DS.Sorted := True;
     DS.ResultKind := rkRelative;
     DS.UseMask := True;
-    DS.Inclusions.Text := Inclusions;
-    DS.Exclusions.Text := Exclusions;
+    DS.Inclusions.Text := TMasks.GetMasks(Inclusions);
+    DS.Exclusions.Text := TMasks.GetMasks(Exclusions);
 
     DS.List.CaseSensitive := False;
   end;

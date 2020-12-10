@@ -8,7 +8,8 @@ uses
   UEngine in 'UEngine.pas',
   URegistry in 'URegistry.pas',
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  UMasks in 'UMasks.pas';
 
 {$R *.res}
 
