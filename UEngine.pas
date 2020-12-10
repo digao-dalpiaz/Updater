@@ -333,7 +333,7 @@ begin
       raise Exception.Create('Cannot create destination folder');
   end;
 
-  SourceStm := TFileStream.Create(SourceFile, fmOpenRead);
+  SourceStm := TFileStream.Create(SourceFile, fmOpenRead or fmShareDenyNone);
   try
     //if file size changed during process, adjust total size
     Queue.TotalSize := Queue.TotalSize + (SourceStm.Size - FI.Size);
