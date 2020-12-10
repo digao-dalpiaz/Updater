@@ -21,7 +21,7 @@ begin
   try
     S.Text := DefinitionMasks;
 
-    for I := S.Count downto 0 do
+    for I := S.Count-1 downto 0 do
       if S[I].StartsWith('//') then S.Delete(I);
 
     Result := S.Text;
