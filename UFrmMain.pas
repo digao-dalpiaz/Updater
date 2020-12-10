@@ -2,15 +2,15 @@ unit UFrmMain;
 
 interface
 
-uses Vcl.Forms, Vcl.ComCtrls, Vcl.Buttons, Vcl.StdCtrls, Vcl.Controls,
-  Vcl.ExtCtrls, Vcl.CheckLst, System.ImageList, Vcl.ImgList, System.Classes,
-  Vcl.ToolWin,
+uses Vcl.Forms, Vcl.VirtualImageList, Vcl.BaseImageCollection,
+  Vcl.ImageCollection, System.ImageList, Vcl.ImgList, Vcl.Controls,
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.ToolWin, Vcl.Buttons, Vcl.StdCtrls,
+  Vcl.CheckLst, System.Classes,
   //
   UConfig, System.Types;
 
 type
   TFrmMain = class(TForm)
-    IL: TImageList;
     LDefs: TCheckListBox;
     LLogs: TListBox;
     Splitter: TSplitter;
@@ -19,7 +19,6 @@ type
     BtnStop: TSpeedButton;
     ProgressBar: TProgressBar;
     LbSize: TLabel;
-    IL_Disabled: TImageList;
     IL_File: TImageList;
     BoxTop: TPanel;
     ToolBar: TToolBar;
@@ -36,6 +35,8 @@ type
     BoxAbout: TPanel;
     LbDigao: TLinkLabel;
     LbVersion: TLabel;
+    IC_ToolBar: TImageCollection;
+    IL_ToolBar: TVirtualImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
