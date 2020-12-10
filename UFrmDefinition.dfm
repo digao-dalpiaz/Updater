@@ -117,7 +117,7 @@ object FrmDefinition: TFrmDefinition
   object CkRecursive: TCheckBox
     Left = 8
     Top = 376
-    Width = 137
+    Width = 145
     Height = 17
     Caption = 'Recursive subdirectories'
     TabOrder = 5
@@ -125,7 +125,7 @@ object FrmDefinition: TFrmDefinition
   object CkDelete: TCheckBox
     Left = 8
     Top = 400
-    Width = 145
+    Width = 153
     Height = 17
     Caption = 'Delete files on destination'
     TabOrder = 6
