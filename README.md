@@ -9,6 +9,10 @@ This application allows you to keep files synchronized by creating a list of rep
 
 The app is under development right now.
 
+## Dependency
+
+This application depends on my component DzDirSeek, available here on GitHub: https://github.com/digao-dalpiaz/DzDirSeek
+
 ## To Do
 
 - ~~ToolBar hidden when process running may look strange.~~
