@@ -62,7 +62,7 @@ begin
   Synchronize(
     procedure
     begin
-      FrmMain.SetControlsState(True);
+      FrmMain.SetControlsState(True); //this will force definitions list invalidate
     end);
 end;
 
@@ -72,7 +72,13 @@ var
 begin
   try
     for D in Config.LstDefinition do
-      if D.Checked then DoDefinition(D);
+    begin
+      if D.Checked then
+      begin
+        DoDefinition(D);
+        D.LastUpdate := Now; //update definition timestamp
+      end;
+    end;
   except
     on E: Exception do
       Log('#ERROR: '+E.Message);
@@ -310,9 +316,6 @@ begin
   finally
     L.Free;
   end;
-
-  //update definition timestamp
-  Def.LastUpdate := Now;
 end;
 
 procedure TEngine.CopyFile(Def: TDefinition; FI: TFileInfo);
