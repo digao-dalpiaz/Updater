@@ -2,13 +2,13 @@ program Updater;
 
 uses
   Vcl.Forms,
-  UFrmMain in 'UFrmMain.pas' {FrmMain},
-  UConfig in 'UConfig.pas',
-  UFrmDefinition in 'UFrmDefinition.pas' {FrmDefinition},
-  UEngine in 'UEngine.pas',
-  URegistry in 'URegistry.pas',
   Vcl.Themes,
   Vcl.Styles,
+  UFrmMain in 'UFrmMain.pas' {FrmMain},
+  UFrmDefinition in 'UFrmDefinition.pas' {FrmDefinition},
+  UConfig in 'UConfig.pas',
+  URegistry in 'URegistry.pas',
+  UEngine in 'UEngine.pas',
   UMasks in 'UMasks.pas';
 
 {$R *.res}

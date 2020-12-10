@@ -100,13 +100,13 @@
             <Form>FrmMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UConfig.pas"/>
         <DCCReference Include="UFrmDefinition.pas">
             <Form>FrmDefinition</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UEngine.pas"/>
+        <DCCReference Include="UConfig.pas"/>
         <DCCReference Include="URegistry.pas"/>
+        <DCCReference Include="UEngine.pas"/>
         <DCCReference Include="UMasks.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
