@@ -49,13 +49,7 @@ object FrmMain: TFrmMain
     Align = alClient
     BorderStyle = bsNone
     Color = clBtnFace
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Segoe UI'
-    Font.Style = []
     ItemHeight = 14
-    ParentFont = False
     TabOrder = 2
     OnDrawItem = LLogsDrawItem
   end
@@ -229,25 +223,27 @@ object FrmMain: TFrmMain
       ButtonHeight = 30
       ButtonWidth = 34
       Images = IL_ToolBar
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       object BtnNew: TToolButton
         Left = 0
         Top = 0
-        Caption = 'New Definition'
+        Hint = 'New Definition'
         ImageIndex = 0
         OnClick = BtnNewClick
       end
       object BtnEdit: TToolButton
         Left = 34
         Top = 0
-        Caption = 'Edit Definition'
+        Hint = 'Edit Definition'
         ImageIndex = 1
         OnClick = BtnEditClick
       end
       object BtnRemove: TToolButton
         Left = 68
         Top = 0
-        Caption = 'Remove Definition'
+        Hint = 'Remove Definition'
         ImageIndex = 2
         OnClick = BtnRemoveClick
       end
@@ -260,14 +256,14 @@ object FrmMain: TFrmMain
       object BtnUp: TToolButton
         Left = 110
         Top = 0
-        Caption = 'Move Up'
+        Hint = 'Move Up'
         ImageIndex = 3
         OnClick = BtnUpClick
       end
       object BtnDown: TToolButton
         Left = 144
         Top = 0
-        Caption = 'Move Down'
+        Hint = 'Move Down'
         ImageIndex = 4
         OnClick = BtnDownClick
       end
@@ -280,7 +276,7 @@ object FrmMain: TFrmMain
       object BtnMasks: TToolButton
         Left = 186
         Top = 0
-        Caption = 'Masks Tables'
+        Hint = 'Masks Tables'
         ImageIndex = 5
         OnClick = BtnMasksClick
       end
@@ -293,7 +289,7 @@ object FrmMain: TFrmMain
       object BtnExecute: TToolButton
         Left = 228
         Top = 0
-        Caption = 'Execute'
+        Hint = 'Execute'
         ImageIndex = 6
         OnClick = BtnExecuteClick
       end
