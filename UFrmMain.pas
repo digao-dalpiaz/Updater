@@ -78,7 +78,7 @@ implementation
 
 uses Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
   Winapi.Windows, Winapi.ShellAPI,
-  UFrmDefinition, UEngine, URegistry;
+  UFrmDefinition, UFrmMasksTables, UEngine, URegistry;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -88,6 +88,7 @@ begin
 
   Config := TConfig.Create;
   Config.LoadDefinitions;
+  Config.LoadMasksTables;
 
   FillDefinitions;
 
@@ -97,6 +98,7 @@ end;
 procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
   Config.SaveDefinitions;
+  Config.SaveMasksTables;
   Config.Free;
 
   TCustomization.SaveRegistry;
@@ -254,7 +256,9 @@ end;
 
 procedure TFrmMain.BtnMasksClick(Sender: TObject);
 begin
-  raise Exception.Create('Not implemented yet');
+  FrmMasksTables := TFrmMasksTables.Create(Application);
+  FrmMasksTables.ShowModal;
+  FrmMasksTables.Free;
 end;
 
 procedure TFrmMain.BtnExecuteClick(Sender: TObject);

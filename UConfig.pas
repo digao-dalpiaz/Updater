@@ -19,16 +19,27 @@ type
   end;
   TLstDefinition = class(TObjectList<TDefinition>);
 
+  TMaskTable = class
+    Name: string;
+    Masks: string;
+  end;
+  TLstMaskTable = class(TObjectList<TMaskTable>);
+
   TConfig = class
     LstDefinition: TLstDefinition;
+    LstMaskTable: TLstMaskTable;
 
-    DefinitionFile: string;
+    DefinitionsFile: string;
+    MasksTablesFile: string;
 
     constructor Create;
     destructor Destroy; override;
 
     procedure LoadDefinitions;
     procedure SaveDefinitions;
+
+    procedure LoadMasksTables;
+    procedure SaveMasksTables;
   end;
 
 var Config: TConfig;
@@ -44,14 +55,27 @@ constructor TConfig.Create;
 begin
   inherited;
   LstDefinition := TLstDefinition.Create;
+  LstMaskTable := TLstMaskTable.Create;
 
-  DefinitionFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Definitions.ini');
+  DefinitionsFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Definitions.ini');
+  MasksTablesFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'MasksTables.ini');
 end;
 
 destructor TConfig.Destroy;
 begin
   LstDefinition.Free;
+  LstMaskTable.Free;
   inherited;
+end;
+
+function PipeToEnter(const Text: string): string;
+begin
+  Result := Text.Replace('|', STR_ENTER);
+end;
+
+function EnterToPipe(const Text: string): string;
+begin
+  Result := Text.Replace(STR_ENTER, '|');
 end;
 
 procedure TConfig.LoadDefinitions;
@@ -61,7 +85,7 @@ var
   S: TStringList;
   D: TDefinition;
 begin
-  Ini := TIniFile.Create(DefinitionFile);
+  Ini := TIniFile.Create(DefinitionsFile);
   try
     S := TStringList.Create;
     try
@@ -75,8 +99,8 @@ begin
         D.Name := Section;
         D.Source := Ini.ReadString(Section, 'Source', '');
         D.Destination := Ini.ReadString(Section, 'Destination', '');
-        D.Inclusions := Ini.ReadString(Section, 'Inclusions', '').Replace('|', STR_ENTER);
-        D.Exclusions := Ini.ReadString(Section, 'Exclusions', '').Replace('|', STR_ENTER);
+        D.Inclusions := PipeToEnter(Ini.ReadString(Section, 'Inclusions', ''));
+        D.Exclusions := PipeToEnter(Ini.ReadString(Section, 'Exclusions', ''));
         D.Recursive := Ini.ReadBool(Section, 'Recursive', False);
         D.Delete := Ini.ReadBool(Section, 'Delete', False);
         D.LastUpdate := Ini.ReadDateTime(Section, 'LastUpdate', 0);
@@ -96,9 +120,9 @@ var
   D: TDefinition;
   Section: string;
 begin
-  TFile.WriteAllText(DefinitionFile, string.Empty); //ensure clear file
+  TFile.WriteAllText(DefinitionsFile, string.Empty); //ensure clear file
 
-  Ini := TIniFile.Create(DefinitionFile);
+  Ini := TIniFile.Create(DefinitionsFile);
   try
     for D in LstDefinition do
     begin
@@ -106,8 +130,8 @@ begin
 
       Ini.WriteString(Section, 'Source', D.Source);
       Ini.WriteString(Section, 'Destination', D.Destination);
-      Ini.WriteString(Section, 'Inclusions', D.Inclusions.Replace(STR_ENTER, '|'));
-      Ini.WriteString(Section, 'Exclusions', D.Exclusions.Replace(STR_ENTER, '|'));
+      Ini.WriteString(Section, 'Inclusions', EnterToPipe(D.Inclusions));
+      Ini.WriteString(Section, 'Exclusions', EnterToPipe(D.Exclusions));
       Ini.WriteBool(Section, 'Recursive', D.Recursive);
       Ini.WriteBool(Section, 'Delete', D.Delete);
       Ini.WriteDateTime(Section, 'LastUpdate', D.LastUpdate);
@@ -116,6 +140,57 @@ begin
   finally
     Ini.Free;
   end;
+end;
+
+procedure TConfig.LoadMasksTables;
+var
+  Section: string;
+  Ini: TIniFile;
+  S: TStringList;
+  M: TMaskTable;
+begin
+  Ini := TIniFile.Create(MasksTablesFile);
+  try
+    S := TStringList.Create;
+    try
+      Ini.ReadSections(S);
+
+      for Section in S do
+      begin
+        M := TMaskTable.Create;
+        LstMaskTable.Add(M);
+
+        M.Name := Section;
+        M.Masks := PipeToEnter(Ini.ReadString(Section, 'Masks', ''));
+      end;
+    finally
+      S.Free;
+    end;
+  finally
+    Ini.Free;
+  end;
+end;
+
+procedure TConfig.SaveMasksTables;
+var
+  Ini: TIniFile;
+  M: TMaskTable;
+  Section: string;
+begin
+  TFile.WriteAllText(MasksTablesFile, string.Empty); //ensure clear file
+
+  Ini := TIniFile.Create(MasksTablesFile);
+  try
+    for M in LstMaskTable do
+    begin
+      Section := M.Name;
+
+      Ini.WriteString(Section, 'Masks', EnterToPipe(M.Masks));
+    end;
+  finally
+    Ini.Free;
+  end;
+
 end;
 
 end.

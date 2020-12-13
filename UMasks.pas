@@ -2,8 +2,12 @@ unit UMasks;
 
 interface
 
+uses UConfig;
+
 type
   TMasks = class
+  private
+    class function FindMaskTable(const Name: string): TMaskTable;
   public
     class function GetMasks(const DefinitionMasks: string): string;
   end;
@@ -16,7 +20,8 @@ class function TMasks.GetMasks(const DefinitionMasks: string): string;
 var
   S: TStringList;
   I: Integer;
-  A: string;
+  A, MasksTable: string;
+  M: TMaskTable;
 begin
   S := TStringList.Create;
   try
@@ -26,13 +31,38 @@ begin
     begin
       A := Trim(S[I]);
 
-      if A.IsEmpty or A.StartsWith('//') then S.Delete(I);
+      if A.IsEmpty or A.StartsWith('//') then
+      begin
+        S.Delete(I);
+        Continue;
+      end;
+
+      if A.StartsWith(':') then
+      begin
+        MasksTable := A.Substring(1);
+        M := FindMaskTable(MasksTable);
+        if M=nil then
+          raise Exception.CreateFmt('Masks table "%s" not found', [MasksTable]);
+
+        S[I] := M.Masks; //replace line by masks table
+        Continue;
+      end;
     end;
 
     Result := S.Text;
   finally
     S.Free;
   end;
+end;
+
+class function TMasks.FindMaskTable(const Name: string): TMaskTable;
+var
+  M: TMaskTable;
+begin
+  for M in Config.LstMaskTable do
+    if SameText(M.Name, Name) then Exit(M);
+
+  Exit(nil);
 end;
 
 end.

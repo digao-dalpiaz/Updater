@@ -6,6 +6,7 @@ uses
   Vcl.Styles,
   UFrmMain in 'UFrmMain.pas' {FrmMain},
   UFrmDefinition in 'UFrmDefinition.pas' {FrmDefinition},
+  UFrmMasksTables in 'UFrmMasksTables.pas' {FrmMasksTables},
   UConfig in 'UConfig.pas',
   URegistry in 'URegistry.pas',
   UEngine in 'UEngine.pas',
