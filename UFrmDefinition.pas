@@ -101,7 +101,7 @@ begin
   if not Edit then
   begin
     Def := TDefinition.Create;
-    Config.LstDefinition.Add(Def);
+    Config.Definitions.Add(Def);
   end;
 
   Def.Name := EdName.Text;

@@ -71,7 +71,7 @@ var
   D: TDefinition;
 begin
   try
-    for D in Config.LstDefinition do
+    for D in Config.Definitions do
     begin
       if D.Checked then
       begin

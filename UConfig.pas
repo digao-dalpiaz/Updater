@@ -17,17 +17,17 @@ type
     LastUpdate: TDateTime;
     Checked: Boolean;
   end;
-  TLstDefinition = class(TObjectList<TDefinition>);
+  TDefinitionList = class(TObjectList<TDefinition>);
 
-  TMaskTable = class
+  TMasksTable = class
     Name: string;
     Masks: string;
   end;
-  TLstMaskTable = class(TObjectList<TMaskTable>);
+  TMasksTableList = class(TObjectList<TMasksTable>);
 
   TConfig = class
-    LstDefinition: TLstDefinition;
-    LstMaskTable: TLstMaskTable;
+    Definitions: TDefinitionList;
+    MasksTables: TMasksTableList;
 
     DefinitionsFile: string;
     MasksTablesFile: string;
@@ -54,8 +54,8 @@ const STR_ENTER = #13#10;
 constructor TConfig.Create;
 begin
   inherited;
-  LstDefinition := TLstDefinition.Create;
-  LstMaskTable := TLstMaskTable.Create;
+  Definitions := TDefinitionList.Create;
+  MasksTables := TMasksTableList.Create;
 
   DefinitionsFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Definitions.ini');
   MasksTablesFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'MasksTables.ini');
@@ -63,8 +63,8 @@ end;
 
 destructor TConfig.Destroy;
 begin
-  LstDefinition.Free;
-  LstMaskTable.Free;
+  Definitions.Free;
+  MasksTables.Free;
   inherited;
 end;
 
@@ -94,7 +94,7 @@ begin
       for Section in S do
       begin
         D := TDefinition.Create;
-        LstDefinition.Add(D);
+        Definitions.Add(D);
 
         D.Name := Section;
         D.Source := Ini.ReadString(Section, 'Source', '');
@@ -124,7 +124,7 @@ begin
 
   Ini := TIniFile.Create(DefinitionsFile);
   try
-    for D in LstDefinition do
+    for D in Definitions do
     begin
       Section := D.Name;
 
@@ -147,7 +147,7 @@ var
   Section: string;
   Ini: TIniFile;
   S: TStringList;
-  M: TMaskTable;
+  M: TMasksTable;
 begin
   Ini := TIniFile.Create(MasksTablesFile);
   try
@@ -157,8 +157,8 @@ begin
 
       for Section in S do
       begin
-        M := TMaskTable.Create;
-        LstMaskTable.Add(M);
+        M := TMasksTable.Create;
+        MasksTables.Add(M);
 
         M.Name := Section;
         M.Masks := PipeToEnter(Ini.ReadString(Section, 'Masks', ''));
@@ -174,14 +174,14 @@ end;
 procedure TConfig.SaveMasksTables;
 var
   Ini: TIniFile;
-  M: TMaskTable;
+  M: TMasksTable;
   Section: string;
 begin
   TFile.WriteAllText(MasksTablesFile, string.Empty); //ensure clear file
 
   Ini := TIniFile.Create(MasksTablesFile);
   try
-    for M in LstMaskTable do
+    for M in MasksTables do
     begin
       Section := M.Name;
 

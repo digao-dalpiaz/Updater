@@ -184,7 +184,7 @@ var
   D: TDefinition;
   Index: Integer;
 begin
-  for D in Config.LstDefinition do
+  for D in Config.Definitions do
   begin
     Index := AddDefinition(D);
     LDefs.Checked[Index] := D.Checked;
@@ -224,7 +224,7 @@ begin
   if MessageDlg('Do you want to remove definition "'+D.Name+'"?',
     mtConfirmation, mbYesNo, 0) = mrYes then
   begin
-    Config.LstDefinition.Remove(D);
+    Config.Definitions.Remove(D);
     LDefs.DeleteSelected;
 
     UpdateButtons;
@@ -238,7 +238,7 @@ begin
   Index := LDefs.ItemIndex;
   NewIndex := Index + Flag;
 
-  Config.LstDefinition.Exchange(Index, NewIndex);
+  Config.Definitions.Exchange(Index, NewIndex);
   LDefs.Items.Exchange(Index, NewIndex);
 
   UpdateButtons;

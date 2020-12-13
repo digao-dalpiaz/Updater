@@ -7,7 +7,7 @@ uses UConfig;
 type
   TMasks = class
   private
-    class function FindMaskTable(const Name: string): TMaskTable;
+    class function FindMasksTable(const Name: string): TMasksTable;
   public
     class function GetMasks(const DefinitionMasks: string): string;
   end;
@@ -21,7 +21,7 @@ var
   S: TStringList;
   I: Integer;
   A, MasksTable: string;
-  M: TMaskTable;
+  M: TMasksTable;
 begin
   S := TStringList.Create;
   try
@@ -40,7 +40,7 @@ begin
       if A.StartsWith(':') then
       begin
         MasksTable := A.Substring(1);
-        M := FindMaskTable(MasksTable);
+        M := FindMasksTable(MasksTable);
         if M=nil then
           raise Exception.CreateFmt('Masks table "%s" not found', [MasksTable]);
 
@@ -55,11 +55,11 @@ begin
   end;
 end;
 
-class function TMasks.FindMaskTable(const Name: string): TMaskTable;
+class function TMasks.FindMasksTable(const Name: string): TMasksTable;
 var
-  M: TMaskTable;
+  M: TMasksTable;
 begin
-  for M in Config.LstMaskTable do
+  for M in Config.MasksTables do
     if SameText(M.Name, Name) then Exit(M);
 
   Exit(nil);

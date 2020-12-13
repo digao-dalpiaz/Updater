@@ -28,7 +28,7 @@ type
     procedure LoadTables;
     procedure UpdatePanel;
 
-    function GetSelectedTable: TMaskTable;
+    function GetSelectedTable: TMasksTable;
   end;
 
 var
@@ -50,21 +50,21 @@ end;
 
 procedure TFrmMasksTables.LoadTables;
 var
-  M: TMaskTable;
+  M: TMasksTable;
 begin
-  for M in Config.LstMaskTable do
+  for M in Config.MasksTables do
     L.Items.AddObject(M.Name, M);
 end;
 
-function TFrmMasksTables.GetSelectedTable: TMaskTable;
+function TFrmMasksTables.GetSelectedTable: TMasksTable;
 begin
-  Result := TMaskTable(L.Items.Objects[L.ItemIndex]);
+  Result := TMasksTable(L.Items.Objects[L.ItemIndex]);
 end;
 
 procedure TFrmMasksTables.UpdatePanel;
 var
   Sel: Boolean;
-  M: TMaskTable;
+  M: TMasksTable;
 begin
   Sel := L.ItemIndex <> -1;
 
@@ -96,11 +96,11 @@ end;
 
 procedure TFrmMasksTables.BtnAddClick(Sender: TObject);
 var
-  M: TMaskTable;
+  M: TMasksTable;
   Index: Integer;
 begin
-  M := TMaskTable.Create;
-  Config.LstMaskTable.Add(M);
+  M := TMasksTable.Create;
+  Config.MasksTables.Add(M);
 
   M.Name := 'NEW_TABLE';
   Index := L.Items.AddObject(M.Name, M);
@@ -111,11 +111,11 @@ end;
 
 procedure TFrmMasksTables.BtnDelClick(Sender: TObject);
 var
-  M: TMaskTable;
+  M: TMasksTable;
 begin
   M := GetSelectedTable;
 
-  Config.LstMaskTable.Remove(M);
+  Config.MasksTables.Remove(M);
   L.DeleteSelected;
 
   UpdatePanel;
@@ -123,7 +123,7 @@ end;
 
 procedure TFrmMasksTables.EditsOfTabkeChange(Sender: TObject);
 var
-  M: TMaskTable;
+  M: TMasksTable;
 begin
   if LoadingTable then Exit;  
 
