@@ -66,6 +66,7 @@ type
     function AddDefinition(Def: TDefinition): Integer;
     function GetSelectedDefinition: TDefinition;
     procedure UpdateButtons;
+    function AnyDefinitionChecked: Boolean;
   public
     procedure SetControlsState(Active: Boolean);
   end;
@@ -136,6 +137,18 @@ begin
 
   BtnUp.Enabled := Sel and (LDefs.ItemIndex > 0);
   BtnDown.Enabled := Sel and (LDefs.ItemIndex < LDefs.Count-1);
+
+  BtnExecute.Enabled := AnyDefinitionChecked;
+end;
+
+function TFrmMain.AnyDefinitionChecked: Boolean;
+var
+  D: TDefinition;
+begin
+  for D in Config.Definitions do
+    if D.Checked then Exit(True);
+
+  Exit(False);
 end;
 
 procedure TFrmMain.LDefsClick(Sender: TObject);
@@ -149,6 +162,8 @@ var
 begin
   D := GetSelectedDefinition;
   D.Checked := LDefs.Checked[LDefs.ItemIndex];
+
+  UpdateButtons;
 end;
 
 procedure TFrmMain.LDefsDrawItem(Control: TWinControl; Index: Integer;
