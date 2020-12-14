@@ -18,7 +18,7 @@ This application depends on my component DzDirSeek, available here on GitHub: ht
 - ~~ToolBar hidden when process running may look strange.~~
 - ~~Splitter locked when process running because CheckListBox disabled.~~
 - Deleted files are internally getting size but never used.
-- Implement Masks Tables.
+- ~~Implement Masks Tables.~~
 - Help info in inclusions/exclusions memo.
 - ~~Allow comments in inclusions/exclusions masks.~~
 - Show total size on files report (New/Modified and Deleted).
