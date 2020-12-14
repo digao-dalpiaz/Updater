@@ -37,6 +37,7 @@ type
     LbVersion: TLabel;
     IC_ToolBar: TImageCollection;
     IL_ToolBar: TVirtualImageList;
+    IL_Masks: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);

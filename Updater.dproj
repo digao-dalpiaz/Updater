@@ -110,6 +110,9 @@
         <DCCReference Include="UFrmMasksEdit.pas">
             <Form>FrmMasksEdit</Form>
         </DCCReference>
+        <DCCReference Include="UFrmMasksAutoComplete.pas">
+            <Form>FrmMasksAutoComplete</Form>
+        </DCCReference>
         <DCCReference Include="UConfig.pas"/>
         <DCCReference Include="URegistry.pas"/>
         <DCCReference Include="UEngine.pas"/>

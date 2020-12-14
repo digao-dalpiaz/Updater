@@ -2,17 +2,15 @@ unit UFrmMasksManage;
 
 interface
 
-uses Vcl.Forms, System.ImageList, Vcl.ImgList, Vcl.Controls, Vcl.StdCtrls,
-  Vcl.ExtCtrls, Vcl.Buttons, System.Classes,
-  //
-  UConfig, System.Types;
+uses Vcl.Forms, Vcl.Controls, Vcl.StdCtrls, System.Classes, Vcl.Buttons,
+ //
+ UConfig, System.Types;
 
 type
   TFrmMasksManage = class(TForm)
     L: TListBox;
     BtnAdd: TSpeedButton;
     BtnDel: TSpeedButton;
-    IL: TImageList;
     BtnMod: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure BtnAddClick(Sender: TObject);
@@ -38,7 +36,7 @@ implementation
 
 {$R *.dfm}
 
-uses Vcl.Graphics, Winapi.Windows, UFrmMasksEdit,
+uses Vcl.Graphics, Winapi.Windows, UFrmMasksEdit, UFrmMain,
   Vcl.Dialogs, System.UITypes;
 
 procedure DoMasksManage;
@@ -97,7 +95,7 @@ begin
   L.Canvas.FillRect(Rect);
 
   L.Canvas.Font.Color := clWhite;
-  IL.Draw(L.Canvas, 3, Rect.Top+2, 0);
+  FrmMain.IL_Masks.Draw(L.Canvas, 3, Rect.Top+2, 0);
   L.Canvas.TextOut(22, Rect.Top+3, L.Items[Index]);
 end;
 

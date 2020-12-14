@@ -8,6 +8,7 @@ uses
   UFrmDefinition in 'UFrmDefinition.pas' {FrmDefinition},
   UFrmMasksManage in 'UFrmMasksManage.pas' {FrmMasksManage},
   UFrmMasksEdit in 'UFrmMasksEdit.pas' {FrmMasksEdit},
+  UFrmMasksAutoComplete in 'UFrmMasksAutoComplete.pas' {FrmMasksAutoComplete},
   UConfig in 'UConfig.pas',
   URegistry in 'URegistry.pas',
   UEngine in 'UEngine.pas',

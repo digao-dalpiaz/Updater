@@ -31,9 +31,13 @@ type
     procedure BtnSourceFolderClick(Sender: TObject);
     procedure BtnDestinationFolderClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure EdMasksKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EdMasksKeyPress(Sender: TObject; var Key: Char);
   private
     Edit: Boolean;
     Def: TDefinition;
+
+    LastKeyIsMasksIdent: Boolean;
   end;
 
 var
@@ -45,7 +49,8 @@ implementation
 
 {$R *.dfm}
 
-uses System.SysUtils, Vcl.Dialogs, System.UITypes, Vcl.FileCtrl;
+uses System.SysUtils, Vcl.Dialogs, System.UITypes, Vcl.FileCtrl,
+  UFrmMasksAutoComplete;
 
 function DoEditDefinition;
 begin
@@ -131,6 +136,22 @@ begin
   Dir := EdDestination.Text;
   if SelectDirectory('Destination folder:', string.Empty, Dir) then
     EdDestination.Text := Dir;
+end;
+
+procedure TFrmDefinition.EdMasksKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key=':' then
+    LastKeyIsMasksIdent := True;
+end;
+
+procedure TFrmDefinition.EdMasksKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if LastKeyIsMasksIdent then
+  begin
+    LastKeyIsMasksIdent := False;
+    DoMasksAutoComplete(TMemo(Sender));
+  end;
 end;
 
 end.

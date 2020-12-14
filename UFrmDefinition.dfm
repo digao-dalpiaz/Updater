@@ -104,6 +104,8 @@ object FrmDefinition: TFrmDefinition
     ScrollBars = ssBoth
     TabOrder = 3
     WordWrap = False
+    OnKeyPress = EdMasksKeyPress
+    OnKeyUp = EdMasksKeyUp
   end
   object EdExclusions: TMemo
     Left = 320
@@ -113,6 +115,8 @@ object FrmDefinition: TFrmDefinition
     ScrollBars = ssBoth
     TabOrder = 4
     WordWrap = False
+    OnKeyPress = EdMasksKeyPress
+    OnKeyUp = EdMasksKeyUp
   end
   object CkRecursive: TCheckBox
     Left = 8
