@@ -50,7 +50,7 @@ implementation
 {$R *.dfm}
 
 uses System.SysUtils, Vcl.Dialogs, System.UITypes, Vcl.FileCtrl,
-  UFrmMasksAutoComplete;
+  UFrmMasksAutoComplete, UCommon;
 
 function DoEditDefinition;
 begin
@@ -58,13 +58,16 @@ begin
   FrmDefinition.Edit := Edit;
   FrmDefinition.Def := Def;
   Result := FrmDefinition.ShowModal = mrOk;
-  if Result then Def := FrmDefinition.Def;  
+  if Result then Def := FrmDefinition.Def;
   FrmDefinition.Free;
 end;
 
 procedure TFrmDefinition.FormCreate(Sender: TObject);
 begin
   Width := Width+8; //fix theme behavior
+
+  EnableEditDirectoryAutoComplete(EdSource);
+  EnableEditDirectoryAutoComplete(EdDestination);
 end;
 
 procedure TFrmDefinition.FormShow(Sender: TObject);
