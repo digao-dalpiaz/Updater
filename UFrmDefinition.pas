@@ -26,6 +26,7 @@ type
     BottomLine: TBevel;
     BtnSourceFolder: TSpeedButton;
     BtnDestinationFolder: TSpeedButton;
+    BtnHelp: TSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
     procedure BtnSourceFolderClick(Sender: TObject);
@@ -33,6 +34,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure EdMasksKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EdMasksKeyPress(Sender: TObject; var Key: Char);
+    procedure BtnHelpClick(Sender: TObject);
   private
     Edit: Boolean;
     Def: TDefinition;
@@ -155,6 +157,11 @@ begin
     LastKeyIsMasksIdent := False;
     DoMasksAutoComplete(TMemo(Sender));
   end;
+end;
+
+procedure TFrmDefinition.BtnHelpClick(Sender: TObject);
+begin
+  ShowMasksHelp;
 end;
 
 end.

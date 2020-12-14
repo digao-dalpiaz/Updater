@@ -4,7 +4,7 @@ object FrmMasksManage: TFrmMasksManage
   BorderStyle = bsDialog
   Caption = 'Masks Tables'
   ClientHeight = 313
-  ClientWidth = 393
+  ClientWidth = 409
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,25 +19,25 @@ object FrmMasksManage: TFrmMasksManage
   object BtnAdd: TSpeedButton
     Left = 344
     Top = 8
-    Width = 41
+    Width = 57
     Height = 33
-    Caption = '+'
+    Caption = 'New'
     OnClick = BtnAddClick
   end
   object BtnDel: TSpeedButton
     Left = 344
     Top = 88
-    Width = 41
+    Width = 57
     Height = 33
-    Caption = '-'
+    Caption = 'Delete'
     OnClick = BtnDelClick
   end
   object BtnMod: TSpeedButton
     Left = 344
     Top = 48
-    Width = 41
+    Width = 57
     Height = 33
-    Caption = '^'
+    Caption = 'Edit'
     OnClick = BtnModClick
   end
   object L: TListBox

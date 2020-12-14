@@ -2,7 +2,7 @@ unit UFrmMasksEdit;
 
 interface
 
-uses Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, System.Classes,
+uses Vcl.Forms, Vcl.Buttons, Vcl.StdCtrls, Vcl.Controls, System.Classes,
   //
   UConfig;
 
@@ -14,9 +14,11 @@ type
     EdMasks: TMemo;
     BtnOK: TButton;
     BtnCancel: TButton;
+    BtnHelp: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
+    procedure BtnHelpClick(Sender: TObject);
   private
     Edit: Boolean;
     MasksTable: TMasksTable;
@@ -33,7 +35,7 @@ implementation
 
 {$R *.dfm}
 
-uses System.SysUtils, Vcl.Dialogs, System.UITypes;
+uses System.SysUtils, Vcl.Dialogs, System.UITypes, UCommon;
 
 function DoMasksEdit;
 begin
@@ -106,6 +108,11 @@ begin
   M := Config.FindMasksTable(EdName.Text);
 
   Result := (M<>nil) and (M<>MasksTable);
+end;
+
+procedure TFrmMasksEdit.BtnHelpClick(Sender: TObject);
+begin
+  ShowMasksHelp;
 end;
 
 end.
