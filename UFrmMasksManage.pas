@@ -96,6 +96,7 @@ begin
   if odSelected in State then L.Canvas.Brush.Color := $00984603;
   L.Canvas.FillRect(Rect);
 
+  L.Canvas.Font.Color := clWhite;
   IL.Draw(L.Canvas, 3, Rect.Top+2, 0);
   L.Canvas.TextOut(22, Rect.Top+3, L.Items[Index]);
 end;
