@@ -3,6 +3,8 @@
 # Updater
 Delphi App to synchronize folder contents
 
+> The app is under development right now.
+
 ## Description
 
 This application allows you to keep files synchronized by creating a list of repositories and allowing options like masks inclusions and exclusions.
@@ -11,9 +13,9 @@ The synchronization method is based on files write date/time property, so the ap
 
 There is a masks tables area, where you can insert several lists of masks, avoiding repeating group of masks in your repositories. In inclusions and exclusions masks, you can specify a literal mask, or specify a masks table, by prefixing table name with `:`.
 
-The app is under development right now.
+![Masks Tables](images/masks_tables.png)
 
-
+![Edit Definition](images/edit_definition.png)
 
 ## Dependency
 
