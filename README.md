@@ -19,7 +19,7 @@ This application depends on my component DzDirSeek, available here on GitHub: ht
 - ~~Splitter locked when process running because CheckListBox disabled.~~
 - Deleted files are internally getting size but never used.
 - ~~Implement Masks Tables.~~
-- Help info in inclusions/exclusions memo.
+- ~~Help info in inclusions/exclusions memo.~~
 - ~~Allow comments in inclusions/exclusions masks.~~
 - Show total size on files report (New/Modified and Deleted).
 - ~~Change app theme.~~
