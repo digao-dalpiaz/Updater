@@ -117,6 +117,7 @@
         <DCCReference Include="URegistry.pas"/>
         <DCCReference Include="UEngine.pas"/>
         <DCCReference Include="UMasks.pas"/>
+        <DCCReference Include="UCommon.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

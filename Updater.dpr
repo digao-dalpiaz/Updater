@@ -12,7 +12,8 @@ uses
   UConfig in 'UConfig.pas',
   URegistry in 'URegistry.pas',
   UEngine in 'UEngine.pas',
-  UMasks in 'UMasks.pas';
+  UMasks in 'UMasks.pas',
+  UCommon in 'UCommon.pas';
 
 {$R *.res}
 

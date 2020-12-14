@@ -79,7 +79,7 @@ implementation
 
 uses Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
   Winapi.Windows, Winapi.ShellAPI,
-  UFrmDefinition, UFrmMasksManage, UEngine, URegistry;
+  UFrmDefinition, UFrmMasksManage, UEngine, URegistry, UCommon;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -156,12 +156,10 @@ procedure TFrmMain.LDefsDrawItem(Control: TWinControl; Index: Integer;
 var
   D: TDefinition;
 begin
-  if odSelected in State then LDefs.Canvas.Brush.Color := $00984603;
-  LDefs.Canvas.FillRect(Rect);
+  InitDrawItem(LDefs.Canvas, Rect, State);
 
   D := TDefinition(LDefs.Items.Objects[Index]);
 
-  LDefs.Canvas.Font.Color := clWhite;
   LDefs.Canvas.TextOut(Rect.Left+2, Rect.Top+2, D.Name);
   if D.LastUpdate>0 then
   begin

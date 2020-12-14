@@ -36,8 +36,7 @@ implementation
 
 {$R *.dfm}
 
-uses Vcl.Graphics, Winapi.Windows, UFrmMasksEdit, UFrmMain,
-  Vcl.Dialogs, System.UITypes;
+uses UFrmMasksEdit, UFrmMain, UCommon, Vcl.Dialogs, System.UITypes;
 
 procedure DoMasksManage;
 begin
@@ -91,10 +90,8 @@ end;
 procedure TFrmMasksManage.LDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 begin
-  if odSelected in State then L.Canvas.Brush.Color := $00984603;
-  L.Canvas.FillRect(Rect);
+  InitDrawItem(L.Canvas, Rect, State);
 
-  L.Canvas.Font.Color := clWhite;
   FrmMain.IL_Masks.Draw(L.Canvas, 3, Rect.Top+2, 0);
   L.Canvas.TextOut(22, Rect.Top+3, L.Items[Index]);
 end;
