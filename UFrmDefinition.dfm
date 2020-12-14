@@ -101,6 +101,12 @@ object FrmDefinition: TFrmDefinition
     Top = 168
     Width = 305
     Height = 193
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Consolas'
+    Font.Style = []
+    ParentFont = False
     ScrollBars = ssBoth
     TabOrder = 3
     WordWrap = False
@@ -112,6 +118,12 @@ object FrmDefinition: TFrmDefinition
     Top = 168
     Width = 305
     Height = 193
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Consolas'
+    Font.Style = []
+    ParentFont = False
     ScrollBars = ssBoth
     TabOrder = 4
     WordWrap = False

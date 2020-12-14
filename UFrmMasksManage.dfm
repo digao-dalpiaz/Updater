@@ -47,6 +47,7 @@ object FrmMasksManage: TFrmMasksManage
     Height = 297
     Style = lbOwnerDrawFixed
     ItemHeight = 20
+    Sorted = True
     TabOrder = 0
     OnClick = LClick
     OnDblClick = LDblClick

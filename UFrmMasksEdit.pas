@@ -71,6 +71,13 @@ begin
     Exit;
   end;
 
+  if Pos(' ', EdName.Text)>0 then
+  begin
+    MessageDlg('Name cannot contain space character', mtError, [mbOK], 0);
+    EdName.SetFocus;
+    Exit;
+  end;
+
   if NameAlreadyExists then
   begin
     MessageDlg('Name already exists', mtError, [mbOK], 0);

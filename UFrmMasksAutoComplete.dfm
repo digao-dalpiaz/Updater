@@ -26,14 +26,11 @@ object FrmMasksAutoComplete: TFrmMasksAutoComplete
     Align = alClient
     BorderStyle = bsNone
     ItemHeight = 20
+    Sorted = True
     TabOrder = 0
     OnDblClick = LDblClick
     OnDrawItem = LDrawItem
     OnKeyPress = LKeyPress
-    ExplicitLeft = -2
-    ExplicitTop = 15
-    ExplicitWidth = 278
-    ExplicitHeight = 112
   end
   object Panel2: TPanel
     Left = 0
@@ -44,7 +41,5 @@ object FrmMasksAutoComplete: TFrmMasksAutoComplete
     BevelOuter = bvNone
     Caption = 'Insert Masks Table'
     TabOrder = 1
-    ExplicitLeft = -2
-    ExplicitWidth = 278
   end
 end

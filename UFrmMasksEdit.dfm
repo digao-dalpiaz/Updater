@@ -44,6 +44,12 @@ object FrmMasksEdit: TFrmMasksEdit
     Top = 72
     Width = 361
     Height = 265
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Consolas'
+    Font.Style = []
+    ParentFont = False
     ScrollBars = ssBoth
     TabOrder = 1
     WordWrap = False
