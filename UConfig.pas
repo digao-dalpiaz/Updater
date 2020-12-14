@@ -40,6 +40,8 @@ type
 
     procedure LoadMasksTables;
     procedure SaveMasksTables;
+
+    function FindMasksTable(const Name: string): TMasksTable;
   end;
 
 var Config: TConfig;
@@ -190,7 +192,16 @@ begin
   finally
     Ini.Free;
   end;
+end;
 
+function TConfig.FindMasksTable(const Name: string): TMasksTable;
+var
+  M: TMasksTable;
+begin
+  for M in MasksTables do
+    if SameText(M.Name, Name) then Exit(M);
+
+  Exit(nil);
 end;
 
 end.

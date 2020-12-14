@@ -104,8 +104,11 @@
             <Form>FrmDefinition</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UFrmMasksTables.pas">
-            <Form>FrmMasksTables</Form>
+        <DCCReference Include="UFrmMasksManage.pas">
+            <Form>FrmMasksManage</Form>
+        </DCCReference>
+        <DCCReference Include="UFrmMasksEdit.pas">
+            <Form>FrmMasksEdit</Form>
         </DCCReference>
         <DCCReference Include="UConfig.pas"/>
         <DCCReference Include="URegistry.pas"/>

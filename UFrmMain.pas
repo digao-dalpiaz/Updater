@@ -78,7 +78,7 @@ implementation
 
 uses Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
   Winapi.Windows, Winapi.ShellAPI,
-  UFrmDefinition, UFrmMasksTables, UEngine, URegistry;
+  UFrmDefinition, UFrmMasksManage, UEngine, URegistry;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
@@ -256,9 +256,7 @@ end;
 
 procedure TFrmMain.BtnMasksClick(Sender: TObject);
 begin
-  FrmMasksTables := TFrmMasksTables.Create(Application);
-  FrmMasksTables.ShowModal;
-  FrmMasksTables.Free;
+  DoMasksManage;
 end;
 
 procedure TFrmMain.BtnExecuteClick(Sender: TObject);
