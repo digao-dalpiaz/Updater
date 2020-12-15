@@ -28,7 +28,7 @@ type
       TotalSize, CurrentSize: Int64;
     end;
 
-    procedure Log(const Text: string; ForceUpdate: Boolean = True);
+    procedure Log(const Prefix: Char; const Text: string; ForceUpdate: Boolean = True);
     procedure Status(const Text: string; ForceUpdate: Boolean = True);
 
     procedure DoDefinition(Def: TDefinition);
@@ -43,7 +43,8 @@ type
 
 implementation
 
-uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek, UMasks;
+uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek, UMasks,
+  System.Diagnostics;
 
 constructor TEngine.Create;
 begin
@@ -69,27 +70,36 @@ end;
 procedure TEngine.Execute;
 var
   D: TDefinition;
+  SW: TStopWatch;
 begin
   try
     for D in Config.Definitions do
     begin
       if D.Checked then
       begin
+        SW := TStopwatch.StartNew;
+
         DoDefinition(D);
         D.LastUpdate := Now; //update definition timestamp
+
+        SW.Stop;
+        Log(':', 'Elapsed time: '+SW.Elapsed.ToString);
+
+        if Queue.TotalSize>0 then
+          Log(':', 'Total copy size: '+BytesToMB(Queue.TotalSize));
       end;
     end;
   except
     on E: Exception do
-      Log('#ERROR: '+E.Message);
+      Log('#', 'ERROR: '+E.Message);
   end;
 
   CheckForQueueFlush(True); //remaining log
 end;
 
-procedure TEngine.Log(const Text: string; ForceUpdate: Boolean);
+procedure TEngine.Log(const Prefix: Char; const Text: string; ForceUpdate: Boolean);
 begin
-  Queue.Log.Add(Text);
+  Queue.Log.Add(Prefix+Text);
 
   CheckForQueueFlush(ForceUpdate);
 end;
@@ -244,7 +254,7 @@ begin
   Delete(A, 1, 2);
 
   if A<>string.Empty then
-    Log(':'+A);
+    Log(':', A);
 end;
 
 procedure TEngine.DoDefinition(Def: TDefinition);
@@ -256,7 +266,7 @@ begin
   Queue.TotalSize := 0;
   Queue.CurrentSize := 0;
 
-  Log('@'+Def.Name);
+  Log('@', Def.Name);
   Status(string.Empty);
 
   if not TDirectory.Exists(Def.Source) then
@@ -285,7 +295,7 @@ begin
       case FI.Operation of
         foAppend:
         begin
-          Log('+'+A, False);
+          Log('+', A, False);
           Status('Appending '+A, False);
 
           CopyFile(Def, FI);
@@ -293,7 +303,7 @@ begin
 
         foUpdate:
         begin
-          Log('~'+A, False);
+          Log('~', A, False);
           Status('Updating '+A, False);
 
           CopyFile(Def, FI);
@@ -301,7 +311,7 @@ begin
 
         foDelete:
         begin
-          Log('-'+A, False);
+          Log('-', A, False);
           Status('Deleting '+A, False);
 
           TFile.Delete(TPath.Combine(Def.Destination, A));
@@ -311,7 +321,7 @@ begin
       end;
     end;
 
-    if L.Count=0 then Log(':Nothing changed');
+    if L.Count=0 then Log(':', 'Nothing changed');
     
   finally
     L.Free;
