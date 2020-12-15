@@ -89,8 +89,7 @@ begin
   TCustomization.LoadRegistry;
 
   Config := TConfig.Create;
-  Config.LoadDefinitions;
-  Config.LoadMasksTables;
+  Config.Load;
 
   FillDefinitions;
 
@@ -99,8 +98,7 @@ end;
 
 procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
-  Config.SaveDefinitions;
-  Config.SaveMasksTables;
+  Config.Save;
   Config.Free;
 
   TCustomization.SaveRegistry;

@@ -29,17 +29,13 @@ type
     Definitions: TDefinitionList;
     MasksTables: TMasksTableList;
 
-    DefinitionsFile: string;
-    MasksTablesFile: string;
+    ConfigFile: string;
 
     constructor Create;
     destructor Destroy; override;
 
-    procedure LoadDefinitions;
-    procedure SaveDefinitions;
-
-    procedure LoadMasksTables;
-    procedure SaveMasksTables;
+    procedure Load;
+    procedure Save;
 
     function FindMasksTable(const Name: string): TMasksTable;
   end;
@@ -48,7 +44,8 @@ var Config: TConfig;
 
 implementation
 
-uses System.Classes, System.SysUtils, System.IniFiles, System.IOUtils,
+uses System.Classes, System.SysUtils, System.IOUtils,
+  Xml.XmlDoc, Xml.XMLIntf, Soap.XSBuiltIns, System.Variants,
   Vcl.Forms;
 
 const STR_ENTER = #13#10;
@@ -59,8 +56,7 @@ begin
   Definitions := TDefinitionList.Create;
   MasksTables := TMasksTableList.Create;
 
-  DefinitionsFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Definitions.ini');
-  MasksTablesFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'MasksTables.ini');
+  ConfigFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Config.xml');
 end;
 
 destructor TConfig.Destroy;
@@ -80,117 +76,123 @@ begin
   Result := Text.Replace(STR_ENTER, '|');
 end;
 
-procedure TConfig.LoadDefinitions;
-var
-  Section: string;
-  Ini: TIniFile;
-  S: TStringList;
-  D: TDefinition;
+function GetNode(Parent: IXMLNode; const Name: string): IXMLNode;
 begin
-  Ini := TIniFile.Create(DefinitionsFile);
-  try
-    S := TStringList.Create;
-    try
-      Ini.ReadSections(S);
+  Result := Parent.ChildNodes.FindNode(Name);
+  if Result=nil then
+    raise Exception.CreateFmt('Node %s\%s not found on config file', [Parent.NodeName, Name]);
+end;
 
-      for Section in S do
+type
+  TNodeValueKind = (nvkString, nvkBoolean);
+
+function GetNodeValue(Parent: IXMLNode; const Name: string; Kind: TNodeValueKind): Variant;
+var V: OleVariant;
+begin
+  V := GetNode(Parent, Name).NodeValue;
+  if (Kind=nvkString) and (V=null) then
+    Result := string.Empty
+  else
+    Result := V;
+end;
+
+procedure TConfig.Load;
+var
+  XML: TXMLDocument;
+  Root, XDefs, XMsks, N: IXMLNode;
+  I: Integer;
+  D: TDefinition;
+  M: TMasksTable;
+begin
+  if not TFile.Exists(ConfigFile) then Exit;
+
+  XML := TXMLDocument.Create(Application);
+  try
+    XML.LoadFromFile(ConfigFile);
+
+    Root := XML.DocumentElement;
+
+    XDefs := GetNode(Root, 'Definitions');
+    for I := 0 to XDefs.ChildNodes.Count-1 do
+    begin
+      N := XDefs.ChildNodes[I];
+      if N.NodeName='Definition' then
       begin
         D := TDefinition.Create;
         Definitions.Add(D);
 
-        D.Name := Section;
-        D.Source := Ini.ReadString(Section, 'Source', '');
-        D.Destination := Ini.ReadString(Section, 'Destination', '');
-        D.Inclusions := PipeToEnter(Ini.ReadString(Section, 'Inclusions', ''));
-        D.Exclusions := PipeToEnter(Ini.ReadString(Section, 'Exclusions', ''));
-        D.Recursive := Ini.ReadBool(Section, 'Recursive', False);
-        D.Delete := Ini.ReadBool(Section, 'Delete', False);
-        D.LastUpdate := Ini.ReadDateTime(Section, 'LastUpdate', 0);
-        D.Checked := Ini.ReadBool(Section, 'Checked', False);
+        D.Name := GetNodeValue(N, 'Name', nvkString);
+        D.Source := GetNodeValue(N, 'Source', nvkString);
+        D.Destination := GetNodeValue(N, 'Destination', nvkString);
+        D.Inclusions := PipeToEnter(GetNodeValue(N, 'Inclusions', nvkString));
+        D.Exclusions := PipeToEnter(GetNodeValue(N, 'Exclusions', nvkString));
+        D.Recursive := GetNodeValue(N, 'Recursive', nvkBoolean);
+        D.Delete := GetNodeValue(N, 'Delete', nvkBoolean);
+        D.LastUpdate := XMLTimeToDateTime(GetNodeValue(N, 'LastUpdate', nvkString));
+        D.Checked := GetNodeValue(N, 'Checked', nvkBoolean);
       end;
-    finally
-      S.Free;
     end;
-  finally
-    Ini.Free;
-  end;
-end;
 
-procedure TConfig.SaveDefinitions;
-var
-  Ini: TIniFile;
-  D: TDefinition;
-  Section: string;
-begin
-  TFile.WriteAllText(DefinitionsFile, string.Empty); //ensure clear file
-
-  Ini := TIniFile.Create(DefinitionsFile);
-  try
-    for D in Definitions do
+    XMsks := GetNode(Root, 'MasksTables');
+    for I := 0 to XMsks.ChildNodes.Count-1 do
     begin
-      Section := D.Name;
-
-      Ini.WriteString(Section, 'Source', D.Source);
-      Ini.WriteString(Section, 'Destination', D.Destination);
-      Ini.WriteString(Section, 'Inclusions', EnterToPipe(D.Inclusions));
-      Ini.WriteString(Section, 'Exclusions', EnterToPipe(D.Exclusions));
-      Ini.WriteBool(Section, 'Recursive', D.Recursive);
-      Ini.WriteBool(Section, 'Delete', D.Delete);
-      Ini.WriteDateTime(Section, 'LastUpdate', D.LastUpdate);
-      Ini.WriteBool(Section, 'Checked', D.Checked);
-    end;
-  finally
-    Ini.Free;
-  end;
-end;
-
-procedure TConfig.LoadMasksTables;
-var
-  Section: string;
-  Ini: TIniFile;
-  S: TStringList;
-  M: TMasksTable;
-begin
-  Ini := TIniFile.Create(MasksTablesFile);
-  try
-    S := TStringList.Create;
-    try
-      Ini.ReadSections(S);
-
-      for Section in S do
+      N := XMsks.ChildNodes[I];
+      if N.NodeName='MasksTable' then
       begin
         M := TMasksTable.Create;
         MasksTables.Add(M);
 
-        M.Name := Section;
-        M.Masks := PipeToEnter(Ini.ReadString(Section, 'Masks', ''));
+        M.Name := GetNodeValue(N, 'Name', nvkString);
+        M.Masks := PipeToEnter(GetNodeValue(N, 'Masks', nvkString));
       end;
-    finally
-      S.Free;
     end;
+
   finally
-    Ini.Free;
+    XML.Free;
   end;
 end;
 
-procedure TConfig.SaveMasksTables;
+procedure TConfig.Save;
 var
-  Ini: TIniFile;
+  XML: TXMLDocument;
+  Root, XDefs, XMsks, N: IXMLNode;
+  D: TDefinition;
   M: TMasksTable;
-  Section: string;
 begin
-  TFile.WriteAllText(MasksTablesFile, string.Empty); //ensure clear file
-
-  Ini := TIniFile.Create(MasksTablesFile);
+  XML := TXMLDocument.Create(Application);
   try
+    XML.Active := True;
+
+    Root := XML.AddChild('Config');
+
+    XDefs := Root.AddChild('Definitions');
+    for D in Definitions do
+    begin
+      N := XDefs.AddChild('Definition');
+
+      N.AddChild('Name').NodeValue := D.Name;
+      N.AddChild('Source').NodeValue := D.Source;
+      N.AddChild('Destination').NodeValue := D.Destination;
+      N.AddChild('Inclusions').NodeValue := EnterToPipe(D.Inclusions);
+      N.AddChild('Exclusions').NodeValue := EnterToPipe(D.Exclusions);
+      N.AddChild('Recursive').NodeValue := D.Recursive;
+      N.AddChild('Delete').NodeValue := D.Delete;
+      N.AddChild('LastUpdate').NodeValue := DateTimeToXMLTime(D.LastUpdate);
+      N.AddChild('Checked').NodeValue := D.Checked;
+    end;
+
+    XMsks := Root.AddChild('MasksTables');
     for M in MasksTables do
     begin
-      Section := M.Name;
+      N := XMsks.AddChild('MasksTable');
 
-      Ini.WriteString(Section, 'Masks', EnterToPipe(M.Masks));
+      N.AddChild('Name').NodeValue := M.Name;
+      N.AddChild('Masks').NodeValue := EnterToPipe(M.Masks);
     end;
+
+    XML.SaveToFile(ConfigFile);
   finally
-    Ini.Free;
+    XML.Free;
   end;
 end;
 
