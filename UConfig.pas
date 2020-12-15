@@ -45,7 +45,7 @@ var Config: TConfig;
 implementation
 
 uses System.Classes, System.SysUtils, System.IOUtils,
-  Xml.XmlDoc, Xml.XMLIntf, Soap.XSBuiltIns, System.Variants,
+  Xml.XmlDoc, Xml.XMLIntf, Soap.XSBuiltIns, System.Variants, System.StrUtils,
   Vcl.Forms;
 
 const STR_ENTER = #13#10;
@@ -177,7 +177,7 @@ begin
       N.AddChild('Exclusions').NodeValue := EnterToPipe(D.Exclusions);
       N.AddChild('Recursive').NodeValue := D.Recursive;
       N.AddChild('Delete').NodeValue := D.Delete;
-      N.AddChild('LastUpdate').NodeValue := DateTimeToXMLTime(D.LastUpdate);
+      N.AddChild('LastUpdate').NodeValue := IfThen(D.LastUpdate>0, DateTimeToXMLTime(D.LastUpdate));
       N.AddChild('Checked').NodeValue := D.Checked;
     end;
 
