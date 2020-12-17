@@ -168,8 +168,10 @@ constructor TFileInfo.Create(const Directory, RelativePath: string; Operation: T
 begin
   Self.RelativePath := RelativePath;
   Self.Operation := Operation;
-    
-  Size := GetFileSize(TPath.Combine(Directory, RelativePath));
+
+  if Operation in [foAppend, foUpdate] then
+    Size := GetFileSize(TPath.Combine(Directory, RelativePath));
+  //for now, we are not retrieving size when deleting file
 end;
 
 procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
