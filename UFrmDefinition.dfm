@@ -3,7 +3,7 @@ object FrmDefinition: TFrmDefinition
   Top = 0
   BorderStyle = bsDialog
   Caption = 'New Definition'
-  ClientHeight = 467
+  ClientHeight = 484
   ClientWidth = 633
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -54,7 +54,7 @@ object FrmDefinition: TFrmDefinition
   end
   object BottomLine: TBevel
     Left = 8
-    Top = 424
+    Top = 440
     Width = 617
     Height = 9
     Shape = bsTopLine
@@ -167,36 +167,44 @@ object FrmDefinition: TFrmDefinition
   end
   object CkRecursive: TCheckBox
     Left = 8
-    Top = 376
+    Top = 392
     Width = 145
     Height = 17
     Caption = 'Recursive subdirectories'
-    TabOrder = 5
+    TabOrder = 6
   end
   object CkDelete: TCheckBox
     Left = 8
-    Top = 400
+    Top = 416
     Width = 153
     Height = 17
     Caption = 'Delete files on destination'
-    TabOrder = 6
+    TabOrder = 7
   end
   object BtnOK: TButton
     Left = 232
-    Top = 432
+    Top = 448
     Width = 81
     Height = 29
     Caption = 'OK'
-    TabOrder = 7
+    TabOrder = 8
     OnClick = BtnOKClick
   end
   object BtnCancel: TButton
     Left = 320
-    Top = 432
+    Top = 448
     Width = 81
     Height = 29
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 8
+    TabOrder = 9
+  end
+  object CkHiddenFiles: TCheckBox
+    Left = 8
+    Top = 368
+    Width = 121
+    Height = 17
+    Caption = 'Include Hidden Files'
+    TabOrder = 5
   end
 end
