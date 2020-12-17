@@ -223,7 +223,7 @@ begin
       end else
       begin
         //existing file
-        if F.Timestamp<>DS_Dest.ResultList[Index].Timestamp then
+        if F.Timestamp <> DS_Dest.ResultList[Index].Timestamp then
         begin
           L.Add(TFileInfo.Create(F, foUpdate));
           Inc(xMod);
