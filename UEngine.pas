@@ -214,7 +214,7 @@ begin
 
     for F in DS_Src.ResultList do
     begin
-      Index := DS_Dest.ResultList.IndexOfRelativePath(F.RelativePath);
+      Index := DS_Dest.ResultList.IndexOfRelativePath(F.RelativePath, True);
       if Index = -1 then
       begin
         //new file
