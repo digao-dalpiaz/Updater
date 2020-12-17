@@ -2,7 +2,7 @@ unit UEngine;
 
 interface
 
-uses System.Classes, UConfig, System.Generics.Collections;
+uses System.Classes, UConfig, System.Generics.Collections, DzDirSeek;
 
 type
   TFileOperation = (foAppend, foUpdate, foDelete);
@@ -12,7 +12,7 @@ type
 
     Size: Int64;
 
-    constructor Create(const Directory, RelativePath: string; Operation: TFileOperation);
+    constructor Create(F: TDSFile; xOperation: TFileOperation);
   end;
   TLstFileInfo = class(TObjectList<TFileInfo>);
 
@@ -43,7 +43,7 @@ type
 
 implementation
 
-uses UFrmMain, System.SysUtils, System.IOUtils, DzDirSeek, UMasks,
+uses UFrmMain, System.SysUtils, System.IOUtils, UMasks,
   System.Diagnostics;
 
 constructor TEngine.Create;
@@ -164,14 +164,12 @@ begin
   end;
 end;
 
-constructor TFileInfo.Create(const Directory, RelativePath: string; Operation: TFileOperation);
+constructor TFileInfo.Create(F: TDSFile; xOperation: TFileOperation);
 begin
-  Self.RelativePath := RelativePath;
-  Self.Operation := Operation;
+  RelativePath := F.RelativePath;
+  Size := F.Size;
 
-  if Operation in [foAppend, foUpdate] then
-    Size := GetFileSize(TPath.Combine(Directory, RelativePath));
-  //for now, we are not retrieving size when deleting file
+  Operation := xOperation;
 end;
 
 procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
@@ -182,18 +180,17 @@ procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
     DS.Dir := Dir;
     DS.SubDir := SubDir;
     DS.Sorted := True;
-    DS.ResultKind := rkRelative;
     DS.UseMask := True;
     DS.Inclusions.Text := TMasks.GetMasks(Inclusions);
     DS.Exclusions.Text := TMasks.GetMasks(Exclusions);
     DS.IncludeHiddenFiles := HiddenFiles;
     DS.IncludeSystemFiles := False;
-
-    DS.List.CaseSensitive := False;
   end;
 
 var
   DS_Src, DS_Dest: TDzDirSeek;
+  Index: Integer;
+  F: TDSFile;
   A: string;
   xAdd, xMod, xDel: Integer;
 begin
@@ -215,35 +212,35 @@ begin
 
     Status('Comparing...');
 
-    for A in DS_Src.List do
+    for F in DS_Src.ResultList do
     begin
-      if DS_Dest.List.IndexOf(A) = -1 then
+      Index := DS_Dest.ResultList.IndexOfRelativePath(F.RelativePath);
+      if Index = -1 then
       begin
         //new file
-        L.Add(TFileInfo.Create(Def.Source, A, foAppend));
+        L.Add(TFileInfo.Create(F, foAppend));
         Inc(xAdd);
       end else
       begin
         //existing file
-        if TFile.GetLastWriteTime(TPath.Combine(Def.Source, A)) <>
-           TFile.GetLastWriteTime(TPath.Combine(Def.Destination, A)) then
+        if F.Timestamp<>DS_Dest.ResultList[Index].Timestamp then
         begin
-          L.Add(TFileInfo.Create(Def.Source, A, foUpdate));
+          L.Add(TFileInfo.Create(F, foUpdate));
           Inc(xMod);
         end;
+
+        DS_Dest.ResultList.Delete(Index);
       end;
     end;
 
     if Def.Delete then
     begin
-      for A in DS_Dest.List do
+      //remaining files in destination list represents removed files
+      for F in DS_Dest.ResultList do
       begin
-        if DS_Src.List.IndexOf(A) = -1 then
-        begin
-          //removed file
-          L.Add(TFileInfo.Create(Def.Destination, A, foDelete));
-          Inc(xDel);
-        end;
+        //removed file
+        L.Add(TFileInfo.Create(F, foDelete));
+        Inc(xDel);
       end;
     end;
   finally
