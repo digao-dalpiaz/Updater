@@ -27,6 +27,7 @@ type
     BtnSourceFolder: TSpeedButton;
     BtnDestinationFolder: TSpeedButton;
     BtnHelp: TSpeedButton;
+    CkHiddenFiles: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
     procedure BtnSourceFolderClick(Sender: TObject);
@@ -83,6 +84,7 @@ begin
     EdDestination.Text := Def.Destination;
     EdInclusions.Text := Def.Inclusions;
     EdExclusions.Text := Def.Exclusions;
+    CkHiddenFiles.Checked := Def.HiddenFiles;
     CkRecursive.Checked := Def.Recursive;
     CkDelete.Checked := Def.Delete;
   end;
@@ -119,6 +121,7 @@ begin
   Def.Destination := EdDestination.Text;
   Def.Inclusions := EdInclusions.Text;
   Def.Exclusions := EdExclusions.Text;
+  Def.HiddenFiles := CkHiddenFiles.Checked;
   Def.Recursive := CkRecursive.Checked;
   Def.Delete := CkDelete.Checked;
 

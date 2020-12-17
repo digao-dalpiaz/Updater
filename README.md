@@ -29,5 +29,7 @@ This application depends on my component DzDirSeek, available here on GitHub: ht
 - ~~Help info in inclusions/exclusions memo.~~
 - ~~Allow comments in inclusions/exclusions masks.~~
 - ~~Change app theme.~~
+- ~~Show total size on files report.~~
 - Deleted files are internally getting size but never used.
-- Show total size on files report (New/Modified and Deleted).
+- Attributes are not being copied from the file/folder.
+- Folders are not being deleted from the destination when there are no more files left.

@@ -11,6 +11,7 @@ type
     Destination: string;
     Inclusions: string;
     Exclusions: string;
+    HiddenFiles: Boolean;
     Recursive: Boolean;
     Delete: Boolean;
 
@@ -126,6 +127,7 @@ begin
         D.Destination := GetNodeValue(N, 'Destination', nvkString);
         D.Inclusions := PipeToEnter(GetNodeValue(N, 'Inclusions', nvkString));
         D.Exclusions := PipeToEnter(GetNodeValue(N, 'Exclusions', nvkString));
+        D.HiddenFiles := GetNodeValue(N, 'HiddenFiles', nvkBoolean);
         D.Recursive := GetNodeValue(N, 'Recursive', nvkBoolean);
         D.Delete := GetNodeValue(N, 'Delete', nvkBoolean);
         D.LastUpdate := XMLTimeToDateTime(GetNodeValue(N, 'LastUpdate', nvkString));
@@ -175,6 +177,7 @@ begin
       N.AddChild('Destination').NodeValue := D.Destination;
       N.AddChild('Inclusions').NodeValue := EnterToPipe(D.Inclusions);
       N.AddChild('Exclusions').NodeValue := EnterToPipe(D.Exclusions);
+      N.AddChild('HiddenFiles').NodeValue := D.HiddenFiles;
       N.AddChild('Recursive').NodeValue := D.Recursive;
       N.AddChild('Delete').NodeValue := D.Delete;
       N.AddChild('LastUpdate').NodeValue := IfThen(D.LastUpdate>0, DateTimeToXMLTime(D.LastUpdate));

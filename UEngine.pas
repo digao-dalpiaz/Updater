@@ -175,7 +175,7 @@ end;
 procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
 
   procedure PrepareDirSeek(DS: TDzDirSeek; const Dir: string; SubDir: Boolean;
-    const Inclusions, Exclusions: string);
+    const Inclusions, Exclusions: string; HiddenFiles: Boolean);
   begin
     DS.Dir := Dir;
     DS.SubDir := SubDir;
@@ -184,6 +184,8 @@ procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
     DS.UseMask := True;
     DS.Inclusions.Text := TMasks.GetMasks(Inclusions);
     DS.Exclusions.Text := TMasks.GetMasks(Exclusions);
+    DS.IncludeHiddenFiles := HiddenFiles;
+    DS.IncludeSystemFiles := False;
 
     DS.List.CaseSensitive := False;
   end;
@@ -200,8 +202,8 @@ begin
   DS_Src := TDzDirSeek.Create(nil);
   DS_Dest := TDzDirSeek.Create(nil);
   try
-    PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions);
-    PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty);
+    PrepareDirSeek(DS_Src, Def.Source, Def.Recursive, Def.Inclusions, Def.Exclusions, Def.HiddenFiles);
+    PrepareDirSeek(DS_Dest, Def.Destination, True, string.Empty, string.Empty, False);
 
     Status('Scanning source...');
     DS_Src.Seek;
