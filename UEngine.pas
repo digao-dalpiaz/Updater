@@ -9,10 +9,11 @@ type
   TFileInfo = class
     RelativePath: string;
     Operation: TFileOperation;
+    IsDir: Boolean;
 
     Size: Int64;
 
-    constructor Create(F: TDSFile; xOperation: TFileOperation);
+    constructor Create(Item: TDSResultItem; xOperation: TFileOperation);
   end;
   TLstFileInfo = class(TObjectList<TFileInfo>);
 
@@ -34,7 +35,7 @@ type
     procedure DoDefinition(Def: TDefinition);
     procedure CheckForQueueFlush(ForceUpdate: Boolean);
     procedure CopyFile(Def: TDefinition; FI: TFileInfo);
-    procedure DoScan(Def: TDefinition; L: TLstFileInfo);
+    procedure DoScan(Def: TDefinition; LCopy, LDel: TLstFileInfo);
     procedure CopyStream(Source, Destination: TStream);
   public
     constructor Create;
@@ -164,15 +165,16 @@ begin
   end;
 end;
 
-constructor TFileInfo.Create(F: TDSFile; xOperation: TFileOperation);
+constructor TFileInfo.Create(Item: TDSResultItem; xOperation: TFileOperation);
 begin
-  RelativePath := F.RelativePath;
-  Size := F.Size;
+  RelativePath := Item.RelativePath;
+  Size := Item.Size;
+  IsDir := Item.IsDir;
 
   Operation := xOperation;
 end;
 
-procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
+procedure TEngine.DoScan(Def: TDefinition; LCopy, LDel: TLstFileInfo);
 
   procedure PrepareDirSeek(DS: TDzDirSeek; const Dir: string; SubDir: Boolean;
     const Inclusions, Exclusions: string; HiddenFiles: Boolean);
@@ -183,14 +185,15 @@ procedure TEngine.DoScan(Def: TDefinition; L: TLstFileInfo);
     DS.UseMask := True;
     DS.Inclusions.Text := TMasks.GetMasks(Inclusions);
     DS.Exclusions.Text := TMasks.GetMasks(Exclusions);
-    DS.IncludeHiddenFiles := HiddenFiles;
-    DS.IncludeSystemFiles := False;
+    DS.SearchHiddenFiles := HiddenFiles;
+    DS.SearchSystemFiles := False;
+    DS.IncludeDirItem := True;
   end;
 
 var
   DS_Src, DS_Dest: TDzDirSeek;
   Index: Integer;
-  F: TDSFile;
+  Item: TDSResultItem;
   A: string;
   xAdd, xMod, xDel: Integer;
 begin
@@ -212,21 +215,27 @@ begin
 
     Status('Comparing...');
 
-    for F in DS_Src.ResultList do
+    for Item in DS_Src.ResultList do
     begin
-      Index := DS_Dest.ResultList.IndexOfRelativePath(F.RelativePath, True);
+      Index := DS_Dest.ResultList.IndexOfRelativePath(Item.RelativePath, True);
       if Index = -1 then
       begin
-        //new file
-        L.Add(TFileInfo.Create(F, foAppend));
-        Inc(xAdd);
+        //new file or folder
+        if not Item.IsDir then
+        begin
+          LCopy.Add(TFileInfo.Create(Item, foAppend));
+          Inc(xAdd);
+        end;
       end else
       begin
-        //existing file
-        if F.Timestamp <> DS_Dest.ResultList[Index].Timestamp then
+        //existing file or folder
+        if not Item.IsDir then
         begin
-          L.Add(TFileInfo.Create(F, foUpdate));
-          Inc(xMod);
+          if Item.Timestamp <> DS_Dest.ResultList[Index].Timestamp then
+          begin
+            LCopy.Add(TFileInfo.Create(Item, foUpdate));
+            Inc(xMod);
+          end;
         end;
 
         DS_Dest.ResultList.Delete(Index);
@@ -236,10 +245,10 @@ begin
     if Def.Delete then
     begin
       //remaining files in destination list represents removed files
-      for F in DS_Dest.ResultList do
+      for Item in DS_Dest.ResultList do
       begin
-        //removed file
-        L.Add(TFileInfo.Create(F, foDelete));
+        //removed file or folder
+        LDel.Insert(0, TFileInfo.Create(Item, foDelete));
         Inc(xDel);
       end;
     end;
@@ -259,10 +268,17 @@ begin
 end;
 
 procedure TEngine.DoDefinition(Def: TDefinition);
+
+  procedure LogAndStatusOperation(FI: TFileInfo; const LogFlag: Char; const StatusPrefix: string);
+  begin
+    Log(LogFlag, FI.RelativePath, False);
+    Status(StatusPrefix+' '+FI.RelativePath, False);
+  end;
+
 var
-  L: TLstFileInfo;
+  LCopy, LDel: TLstFileInfo;
   FI: TFileInfo;
-  A: string;
+  Path: string;
 begin
   Queue.TotalSize := 0;
   Queue.CurrentSize := 0;
@@ -279,53 +295,58 @@ begin
       raise Exception.Create('Cannot create root destination folder');
   end;
 
-  L := TLstFileInfo.Create;
+  LCopy := TLstFileInfo.Create;
+  LDel := TLstFileInfo.Create;
   try
-    DoScan(Def, L);
+    DoScan(Def, LCopy, LDel);
 
-    for FI in L do
+    for FI in LCopy do
     begin
-      if FI.Operation in [foAppend, foUpdate] then
-        Queue.TotalSize := Queue.TotalSize + FI.Size;
+      Queue.TotalSize := Queue.TotalSize + FI.Size;
     end;
 
-    for FI in L do
+    for FI in LCopy do
     begin
-      A := FI.RelativePath;
-
-      case FI.Operation of
+      case FI.Operation of //Operation foAppend and foUpdate are always file
         foAppend:
         begin
-          Log('+', A, False);
-          Status('Appending '+A, False);
-
+          LogAndStatusOperation(FI, '+', 'Appending');
           CopyFile(Def, FI);
         end;
 
         foUpdate:
         begin
-          Log('~', A, False);
-          Status('Updating '+A, False);
-
+          LogAndStatusOperation(FI, '~', 'Updating');
           CopyFile(Def, FI);
-        end;
-
-        foDelete:
-        begin
-          Log('-', A, False);
-          Status('Deleting '+A, False);
-
-          TFile.Delete(TPath.Combine(Def.Destination, A));
         end;
 
         else raise Exception.Create('Invalid operation');
       end;
     end;
 
-    if L.Count=0 then Log(':', 'Nothing changed');
+    for FI in LDel do
+    begin
+      case FI.Operation of
+        foDelete:
+        begin
+          LogAndStatusOperation(FI, '-', 'Deleting');
+
+          Path := TPath.Combine(Def.Destination, FI.RelativePath);
+          if FI.IsDir then
+            TDirectory.Delete(Path)
+          else
+            TFile.Delete(Path);
+        end;
+
+        else raise Exception.Create('Invalid operation');
+      end;
+    end;
+
+    if (LCopy.Count=0) and (LDel.Count=0) then Log(':', 'Nothing changed');
     
   finally
-    L.Free;
+    LCopy.Free;
+    LDel.Free;
   end;
 end;
 
