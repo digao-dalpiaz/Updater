@@ -58,6 +58,7 @@ type
     procedure LbDigaoLinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
     procedure BtnMasksClick(Sender: TObject);
+    procedure LLogsDblClick(Sender: TObject);
   private
     EngineRunning: Boolean;
 
@@ -345,6 +346,16 @@ begin
     LLogs.Canvas.TextOut(18, Rect.Top, A);
   end else
     LLogs.Canvas.TextOut(3, Rect.Top, A);
+end;
+
+procedure TFrmMain.LLogsDblClick(Sender: TObject);
+var
+  A: string;
+begin
+  A := LLogs.Items[LLogs.ItemIndex];
+  Delete(A, 1, 1);
+
+  ShowMessage('Log content:'+#13#13+A);
 end;
 
 end.

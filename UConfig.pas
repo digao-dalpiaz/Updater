@@ -46,10 +46,8 @@ var Config: TConfig;
 implementation
 
 uses System.Classes, System.SysUtils, System.IOUtils,
-  Xml.XmlDoc, Xml.XMLIntf, Soap.XSBuiltIns, System.Variants, System.StrUtils,
+  Xml.XmlDoc, Xml.XMLIntf, Soap.XSBuiltIns, System.Variants,
   Vcl.Forms;
-
-const STR_ENTER = #13#10;
 
 constructor TConfig.Create;
 begin
@@ -67,6 +65,9 @@ begin
   inherited;
 end;
 
+{$REGION 'Utils'}
+const STR_ENTER = #13#10;
+
 function PipeToEnter(const Text: string): string;
 begin
   Result := Text.Replace('|', STR_ENTER);
@@ -75,6 +76,22 @@ end;
 function EnterToPipe(const Text: string): string;
 begin
   Result := Text.Replace(STR_ENTER, '|');
+end;
+
+function XMLStrToTimestamp(V: string): TDateTime;
+begin
+  if not V.IsEmpty then
+    Result := XMLTimeToDateTime(V)
+  else
+    Result := 0;
+end;
+
+function TimestampToXMLStr(V: TDateTime): string;
+begin
+  if V>0 then
+    Result := DateTimeToXMLTime(V)
+  else
+    Result := string.Empty;
 end;
 
 function GetNode(Parent: IXMLNode; const Name: string): IXMLNode;
@@ -96,6 +113,7 @@ begin
   else
     Result := V;
 end;
+{$ENDREGION}
 
 procedure TConfig.Load;
 var
@@ -130,7 +148,7 @@ begin
         D.HiddenFiles := GetNodeValue(N, 'HiddenFiles', nvkBoolean);
         D.Recursive := GetNodeValue(N, 'Recursive', nvkBoolean);
         D.Delete := GetNodeValue(N, 'Delete', nvkBoolean);
-        D.LastUpdate := XMLTimeToDateTime(GetNodeValue(N, 'LastUpdate', nvkString));
+        D.LastUpdate := XMLStrToTimestamp(GetNodeValue(N, 'LastUpdate', nvkString));
         D.Checked := GetNodeValue(N, 'Checked', nvkBoolean);
       end;
     end;
@@ -180,7 +198,7 @@ begin
       N.AddChild('HiddenFiles').NodeValue := D.HiddenFiles;
       N.AddChild('Recursive').NodeValue := D.Recursive;
       N.AddChild('Delete').NodeValue := D.Delete;
-      N.AddChild('LastUpdate').NodeValue := IfThen(D.LastUpdate>0, DateTimeToXMLTime(D.LastUpdate));
+      N.AddChild('LastUpdate').NodeValue := TimestampToXMLStr(D.LastUpdate);
       N.AddChild('Checked').NodeValue := D.Checked;
     end;
 

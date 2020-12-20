@@ -51,6 +51,7 @@ object FrmMain: TFrmMain
     Color = clBtnFace
     ItemHeight = 14
     TabOrder = 2
+    OnDblClick = LLogsDblClick
     OnDrawItem = LLogsDrawItem
   end
   object BoxProgress: TPanel

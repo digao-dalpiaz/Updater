@@ -248,7 +248,7 @@ begin
       for Item in DS_Dest.ResultList do
       begin
         //removed file or folder
-        LDel.Insert(0, TFileInfo.Create(Item, foDelete));
+        LDel.Insert(0, TFileInfo.Create(Item, foDelete)); //descending list
         Inc(xDel);
       end;
     end;
@@ -265,6 +265,15 @@ begin
 
   if A<>string.Empty then
     Log(':', A);
+
+  if (xDel>0) and (Def.LastUpdate=0) then
+    raise Exception.Create(
+    'For security reasons, synchronization has been canceled,'+
+    ' as it is the first execution of this definition and files and/or folders'+
+    ' to be removed at the destination have been detected.'+
+    ' If you are sure of the definition settings, you will need to disable'+
+    ' the exclusion files option in the definition to proceed with this operation.'
+    );
 end;
 
 procedure TEngine.DoDefinition(Def: TDefinition);
