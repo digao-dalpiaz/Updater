@@ -169,6 +169,7 @@ procedure TFrmMain.LDefsDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   D: TDefinition;
+  A: string;
 begin
   InitDrawItem(LDefs.Canvas, Rect, State);
 
@@ -177,8 +178,10 @@ begin
   LDefs.Canvas.TextOut(Rect.Left+2, Rect.Top+2, D.Name);
   if D.LastUpdate>0 then
   begin
+    A := DateTimeToStr(D.LastUpdate);
+
     LDefs.Canvas.Font.Color := clGray;
-    LDefs.Canvas.TextOut(Rect.Right-110, Rect.Top+2, DateTimeToStr(D.LastUpdate));
+    LDefs.Canvas.TextOut(Rect.Right-LDefs.Canvas.TextWidth(A)-4, Rect.Top+2, A);
   end;
 end;
 
