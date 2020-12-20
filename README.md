@@ -3,6 +3,8 @@
 # Updater
 Delphi App to synchronize folder contents
 
+Please, read the article on my website: http://digaodalpiaz.com/wp/folder-and-file-synchronizer/
+
 > The app is under development right now.
 
 ## Description
