@@ -28,6 +28,7 @@ type
     BtnDestinationFolder: TSpeedButton;
     BtnHelp: TSpeedButton;
     CkHiddenFiles: TCheckBox;
+    Label1: TLabel;
     procedure FormShow(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
     procedure BtnSourceFolderClick(Sender: TObject);

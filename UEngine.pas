@@ -266,6 +266,7 @@ begin
   if A<>string.Empty then
     Log(':', A);
 
+  //security check for deleting on first execution
   if (xDel>0) and (Def.LastUpdate=0) then
     raise Exception.Create(
     'For security reasons, synchronization has been canceled,'+

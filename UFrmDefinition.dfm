@@ -110,6 +110,24 @@ object FrmDefinition: TFrmDefinition
       80FFC080FFC080FFC080FFC080FFC080FFC080FFC080FFC080FF}
     OnClick = BtnHelpClick
   end
+  object Label1: TLabel
+    Left = 304
+    Top = 392
+    Width = 321
+    Height = 25
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 
+      'Hidden files and folders are always disregarded on destination.'#13 +
+      #10'System files and folders are always disregarded on source and d' +
+      'estination.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -9
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object EdName: TEdit
     Left = 8
     Top = 24
@@ -210,9 +228,9 @@ object FrmDefinition: TFrmDefinition
   object CkHiddenFiles: TCheckBox
     Left = 8
     Top = 368
-    Width = 177
+    Width = 225
     Height = 17
-    Caption = 'Include hidden files and folders'
+    Caption = 'Include hidden files and folders on source'
     TabOrder = 5
   end
 end
