@@ -168,18 +168,26 @@ object FrmDefinition: TFrmDefinition
   object CkRecursive: TCheckBox
     Left = 8
     Top = 392
-    Width = 145
+    Width = 193
     Height = 17
-    Caption = 'Recursive subdirectories'
+    Caption = 'Recursive subdirectories on source'
     TabOrder = 6
   end
   object CkDelete: TCheckBox
     Left = 8
     Top = 416
-    Width = 153
+    Width = 265
     Height = 17
-    Caption = 'Delete files on destination'
+    Caption = 'Delete nonexistent files and folders on destination'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 7303167
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 7
+    StyleElements = [seClient, seBorder]
+    OnClick = CkDeleteClick
   end
   object BtnOK: TButton
     Left = 232
@@ -202,9 +210,9 @@ object FrmDefinition: TFrmDefinition
   object CkHiddenFiles: TCheckBox
     Left = 8
     Top = 368
-    Width = 121
+    Width = 177
     Height = 17
-    Caption = 'Include Hidden Files'
+    Caption = 'Include hidden files and folders'
     TabOrder = 5
   end
 end

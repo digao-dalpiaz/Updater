@@ -36,6 +36,7 @@ type
     procedure EdMasksKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EdMasksKeyPress(Sender: TObject; var Key: Char);
     procedure BtnHelpClick(Sender: TObject);
+    procedure CkDeleteClick(Sender: TObject);
   private
     Edit: Boolean;
     Def: TDefinition;
@@ -165,6 +166,14 @@ end;
 procedure TFrmDefinition.BtnHelpClick(Sender: TObject);
 begin
   ShowMasksHelp;
+end;
+
+procedure TFrmDefinition.CkDeleteClick(Sender: TObject);
+begin
+  if CkDelete.Focused and CkDelete.Checked then
+    MessageDlg(
+      'Warning! This option will erase all files and folders on the destination'+
+      ' that don''t match the items of the synchronization.', mtWarning, [mbOK], 0);
 end;
 
 end.
