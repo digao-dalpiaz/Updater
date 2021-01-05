@@ -23,13 +23,13 @@ object FrmCustomization: TFrmCustomization
     Height = 9
     Shape = bsTopLine
   end
-  object CkNewVersion: TCheckBox
+  object CkCheckForNewVersion: TCheckBox
     Left = 8
-    Top = 8
+    Top = 40
     Width = 185
     Height = 17
     Caption = 'Check for new version on startup'
-    TabOrder = 0
+    TabOrder = 1
   end
   object BtnOK: TButton
     Left = 120
@@ -37,7 +37,7 @@ object FrmCustomization: TFrmCustomization
     Width = 81
     Height = 29
     Caption = 'OK'
-    TabOrder = 1
+    TabOrder = 2
     OnClick = BtnOKClick
   end
   object BtnCancel: TButton
@@ -47,6 +47,14 @@ object FrmCustomization: TFrmCustomization
     Height = 29
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 2
+    TabOrder = 3
+  end
+  object CkSecureMode: TCheckBox
+    Left = 8
+    Top = 8
+    Width = 313
+    Height = 17
+    Caption = 'Secure mode (no changes will be made when synchronizing)'
+    TabOrder = 0
   end
 end

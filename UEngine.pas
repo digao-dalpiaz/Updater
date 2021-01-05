@@ -34,8 +34,9 @@ type
 
     procedure DoDefinition(Def: TDefinition);
     procedure CheckForQueueFlush(ForceUpdate: Boolean);
-    procedure CopyFile(Def: TDefinition; FI: TFileInfo);
     procedure DoScan(Def: TDefinition; LCopy, LDel: TLstFileInfo);
+    procedure CopyFile(Def: TDefinition; FI: TFileInfo);
+    procedure DeleteFile(Def: TDefinition; FI: TFileInfo);
     procedure CopyStream(Source, Destination: TStream);
   public
     constructor Create;
@@ -81,7 +82,8 @@ begin
         SW := TStopwatch.StartNew;
 
         DoDefinition(D);
-        D.LastUpdate := Now; //update definition timestamp
+        if not Config.SecureMode then
+          D.LastUpdate := Now; //update definition timestamp
 
         SW.Stop;
         Log(':', 'Elapsed time: '+SW.Elapsed.ToString);
@@ -282,13 +284,14 @@ procedure TEngine.DoDefinition(Def: TDefinition);
   procedure LogAndStatusOperation(FI: TFileInfo; const LogFlag: Char; const StatusPrefix: string);
   begin
     Log(LogFlag, FI.RelativePath, False);
-    Status(StatusPrefix+' '+FI.RelativePath, False);
+
+    if not Config.SecureMode then
+      Status(StatusPrefix+' '+FI.RelativePath, False);
   end;
 
 var
   LCopy, LDel: TLstFileInfo;
   FI: TFileInfo;
-  Path: string;
 begin
   Queue.TotalSize := 0;
   Queue.CurrentSize := 0;
@@ -296,14 +299,16 @@ begin
   Log('@', Def.Name);
   Status(string.Empty);
 
+  if Config.SecureMode then
+    Log('@', '*** SECURE MODE - No changes will be made ***');
+
   if not TDirectory.Exists(Def.Source) then
     raise Exception.Create('Source not found');
 
-  if not TDirectory.Exists(Def.Destination) then
-  begin
-    if not ForceDirectories(Def.Destination) then
-      raise Exception.Create('Cannot create root destination folder');
-  end;
+  if not Config.SecureMode then
+    if not TDirectory.Exists(Def.Destination) then
+      if not ForceDirectories(Def.Destination) then
+        raise Exception.Create('Cannot create root destination folder');
 
   LCopy := TLstFileInfo.Create;
   LDel := TLstFileInfo.Create;
@@ -340,12 +345,7 @@ begin
         foDelete:
         begin
           LogAndStatusOperation(FI, '-', 'Deleting');
-
-          Path := TPath.Combine(Def.Destination, FI.RelativePath);
-          if FI.IsDir then
-            TDirectory.Delete(Path)
-          else
-            TFile.Delete(Path);
+          DeleteFile(Def, FI);
         end;
 
         else raise Exception.Create('Invalid operation');
@@ -365,6 +365,8 @@ var
   SourceFile, DestFile, DestDirectory: string;
   SourceStm, DestStm: TFileStream;
 begin
+  if Config.SecureMode then Exit;
+
   SourceFile := TPath.Combine(Def.Source, FI.RelativePath);
   DestFile := TPath.Combine(Def.Destination, FI.RelativePath);
 
@@ -418,6 +420,19 @@ begin
   finally
     SetLength(Buffer, 0);
   end;
+end;
+
+procedure TEngine.DeleteFile(Def: TDefinition; FI: TFileInfo);
+var
+  Path: string;
+begin
+  if Config.SecureMode then Exit;
+
+  Path := TPath.Combine(Def.Destination, FI.RelativePath);
+  if FI.IsDir then
+    TDirectory.Delete(Path)
+  else
+    TFile.Delete(Path);
 end;
 
 end.

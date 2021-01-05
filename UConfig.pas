@@ -27,6 +27,7 @@ type
   TMasksTableList = class(TObjectList<TMasksTable>);
 
   TConfig = class
+    SecureMode: Boolean;
     CheckForNewVersion: Boolean;
 
     Definitions: TDefinitionList;
@@ -59,6 +60,7 @@ begin
 
   ConfigFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Config.xml');
 
+  SecureMode := True; //default value
   CheckForNewVersion := True; //default value
 end;
 
@@ -135,6 +137,7 @@ begin
 
     Root := XML.DocumentElement;
 
+    SecureMode := GetNodeValue(Root, 'SecureMode', nvkBoolean);
     CheckForNewVersion := GetNodeValue(Root, 'CheckForNewVersion', nvkBoolean);
 
     XDefs := GetNode(Root, 'Definitions');
@@ -191,6 +194,7 @@ begin
 
     Root := XML.AddChild('Config');
 
+    Root.AddChild('SecureMode').NodeValue := SecureMode;
     Root.AddChild('CheckForNewVersion').NodeValue := CheckForNewVersion;
 
     XDefs := Root.AddChild('Definitions');

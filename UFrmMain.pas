@@ -39,6 +39,7 @@ type
     IL_ToolBar: TVirtualImageList;
     IL_Masks: TImageList;
     BtnCustomization: TToolButton;
+    BoxSecureMode: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -62,6 +63,7 @@ type
     procedure LLogsDblClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure BtnCustomizationClick(Sender: TObject);
+    procedure BoxSecureModeClick(Sender: TObject);
   private
     EngineRunning: Boolean;
 
@@ -73,6 +75,7 @@ type
     function AnyDefinitionChecked: Boolean;
   public
     procedure SetControlsState(Active: Boolean);
+    procedure UpdSecureMode;
   end;
 
 var
@@ -89,18 +92,28 @@ uses Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
-  ReportMemoryLeaksOnShutdown := True;
+  try
+    ReportMemoryLeaksOnShutdown := True;
 
-  LbVersion.Caption := Format('Version %s', [STR_VERSION]);
+    LbVersion.Caption := Format('Version %s', [STR_VERSION]);
 
-  TCustomization.LoadRegistry;
+    TCustomization.LoadRegistry;
 
-  Config := TConfig.Create;
-  Config.Load;
+    Config := TConfig.Create;
+    Config.Load;
 
-  FillDefinitions;
+    FillDefinitions;
+    UpdateButtons;
+    UpdSecureMode;
+  except
+    on E: Exception do
+    begin
+      MessageDlg('ERROR: '+E.Message, mtError, [mbOK], 0);
 
-  UpdateButtons;
+      OnDestroy := nil;
+      Application.Terminate;
+    end;
+  end;
 end;
 
 procedure TFrmMain.FormDestroy(Sender: TObject);
@@ -376,6 +389,21 @@ begin
   Delete(A, 1, 1);
 
   ShowMessage('Log content:'+#13#13+A);
+end;
+
+procedure TFrmMain.UpdSecureMode;
+begin
+  BoxSecureMode.Visible := Config.SecureMode;
+end;
+
+procedure TFrmMain.BoxSecureModeClick(Sender: TObject);
+begin
+  MessageDlg(
+    'In secure mode, no files are changed during synchronization.'+#13+
+    'This can be used to check which changes would be made according to the definition parameters.'+#13+
+    #13+
+    'When everything is ready, you can disable this option in the Customization dialog.',
+    mtInformation, [mbOK], 0);
 end;
 
 end.

@@ -20,7 +20,7 @@ object FrmMain: TFrmMain
   TextHeight = 13
   object Splitter: TSplitter
     Left = 0
-    Top = 187
+    Top = 215
     Width = 532
     Height = 5
     Cursor = crVSplit
@@ -29,7 +29,7 @@ object FrmMain: TFrmMain
   end
   object LDefs: TCheckListBox
     Left = 0
-    Top = 34
+    Top = 62
     Width = 532
     Height = 153
     OnClickCheck = LDefsClickCheck
@@ -40,12 +40,13 @@ object FrmMain: TFrmMain
     TabOrder = 1
     OnClick = LDefsClick
     OnDrawItem = LDefsDrawItem
+    ExplicitTop = 34
   end
   object LLogs: TListBox
     Left = 0
-    Top = 192
+    Top = 220
     Width = 532
-    Height = 240
+    Height = 212
     Style = lbOwnerDrawFixed
     Align = alClient
     BorderStyle = bsNone
@@ -54,6 +55,8 @@ object FrmMain: TFrmMain
     TabOrder = 2
     OnDblClick = LLogsDblClick
     OnDrawItem = LLogsDrawItem
+    ExplicitTop = 192
+    ExplicitHeight = 240
   end
   object BoxProgress: TPanel
     Left = 0
@@ -334,6 +337,29 @@ object FrmMain: TFrmMain
         OnLinkClick = LbDigaoLinkClick
       end
     end
+  end
+  object BoxSecureMode: TPanel
+    Left = 0
+    Top = 34
+    Width = 532
+    Height = 28
+    Cursor = crHandPoint
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'SECURE MODE enabled - no changes will be made when synchronizing'
+    Color = 1092856
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 4
+    StyleElements = [seBorder]
+    OnClick = BoxSecureModeClick
+    ExplicitLeft = -8
+    ExplicitTop = 27
   end
   object IL_File: TImageList
     Height = 12
