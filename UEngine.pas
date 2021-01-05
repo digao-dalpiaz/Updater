@@ -269,7 +269,7 @@ begin
     Log(':', A);
 
   //security check for deleting on first execution
-  if (xDel>0) and (Def.LastUpdate=0) then
+  if (xDel>0) and (Def.LastUpdate=0) and not Config.SecureMode then
     raise Exception.Create(
     'For security reasons, synchronization has been canceled,'+
     ' as it is the first execution of this definition and files and/or folders'+
