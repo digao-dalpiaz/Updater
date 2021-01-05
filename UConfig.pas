@@ -27,19 +27,22 @@ type
   TMasksTableList = class(TObjectList<TMasksTable>);
 
   TConfig = class
+  private
+    ConfigFile: string;
+    Loaded: Boolean;
+
+    procedure Load;
+    procedure Save;
+  public
     SecureMode: Boolean;
+    WriteLogFile: Boolean;
     CheckForNewVersion: Boolean;
 
     Definitions: TDefinitionList;
     MasksTables: TMasksTableList;
 
-    ConfigFile: string;
-
     constructor Create;
     destructor Destroy; override;
-
-    procedure Load;
-    procedure Save;
 
     function FindMasksTable(const Name: string): TMasksTable;
   end;
@@ -60,12 +63,20 @@ begin
 
   ConfigFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Config.xml');
 
-  SecureMode := True; //default value
-  CheckForNewVersion := True; //default value
+  //default values
+  SecureMode := True;
+  WriteLogFile := True;
+  CheckForNewVersion := True;
+
+  Load;
+  Loaded := True;
 end;
 
 destructor TConfig.Destroy;
 begin
+  if Loaded then //avoid losing config file
+    Save;
+
   Definitions.Free;
   MasksTables.Free;
   inherited;
@@ -138,6 +149,7 @@ begin
     Root := XML.DocumentElement;
 
     SecureMode := GetNodeValue(Root, 'SecureMode', nvkBoolean);
+    WriteLogFile := GetNodeValue(Root, 'WriteLogFile', nvkBoolean);
     CheckForNewVersion := GetNodeValue(Root, 'CheckForNewVersion', nvkBoolean);
 
     XDefs := GetNode(Root, 'Definitions');
@@ -195,6 +207,7 @@ begin
     Root := XML.AddChild('Config');
 
     Root.AddChild('SecureMode').NodeValue := SecureMode;
+    Root.AddChild('WriteLogFile').NodeValue := WriteLogFile;
     Root.AddChild('CheckForNewVersion').NodeValue := CheckForNewVersion;
 
     XDefs := Root.AddChild('Definitions');

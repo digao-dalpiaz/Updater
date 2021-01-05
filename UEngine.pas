@@ -45,7 +45,7 @@ type
 
 implementation
 
-uses UFrmMain, System.SysUtils, System.IOUtils, UMasks,
+uses UFrmMain, System.SysUtils, System.IOUtils, UMasks, UVars,
   System.Diagnostics;
 
 constructor TEngine.Create;
@@ -101,7 +101,17 @@ begin
 end;
 
 procedure TEngine.Log(const Prefix: Char; const Text: string; ForceUpdate: Boolean);
+var
+  LogFilePrefix: string;
 begin
+  if Config.WriteLogFile then
+  begin
+    if CharInSet(Prefix, ['+', '~', '-']) then
+      LogFilePrefix := Format('[%s]', [Prefix]);
+
+    TFile.AppendAllText(pubLogFile, DateTimeToStr(Now)+' - '+LogFilePrefix+Text + #13#10);
+  end;
+
   Queue.Log.Add(Prefix+Text);
 
   CheckForQueueFlush(ForceUpdate);

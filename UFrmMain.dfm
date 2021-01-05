@@ -40,7 +40,6 @@ object FrmMain: TFrmMain
     TabOrder = 1
     OnClick = LDefsClick
     OnDrawItem = LDefsDrawItem
-    ExplicitTop = 34
   end
   object LLogs: TListBox
     Left = 0
@@ -55,8 +54,6 @@ object FrmMain: TFrmMain
     TabOrder = 2
     OnDblClick = LLogsDblClick
     OnDrawItem = LLogsDrawItem
-    ExplicitTop = 192
-    ExplicitHeight = 240
   end
   object BoxProgress: TPanel
     Left = 0
@@ -358,8 +355,6 @@ object FrmMain: TFrmMain
     TabOrder = 4
     StyleElements = [seBorder]
     OnClick = BoxSecureModeClick
-    ExplicitLeft = -8
-    ExplicitTop = 27
   end
   object IL_File: TImageList
     Height = 12

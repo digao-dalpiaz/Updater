@@ -97,10 +97,11 @@ begin
 
     LbVersion.Caption := Format('Version %s', [STR_VERSION]);
 
+    pubLogFile := ExtractFilePath(Application.ExeName)+'Log.txt';
+
     TCustomization.LoadRegistry;
 
     Config := TConfig.Create;
-    Config.Load;
 
     FillDefinitions;
     UpdateButtons;
@@ -109,8 +110,6 @@ begin
     on E: Exception do
     begin
       MessageDlg('ERROR: '+E.Message, mtError, [mbOK], 0);
-
-      OnDestroy := nil;
       Application.Terminate;
     end;
   end;
@@ -118,15 +117,15 @@ end;
 
 procedure TFrmMain.FormDestroy(Sender: TObject);
 begin
-  Config.Save;
-  Config.Free;
+  if Assigned(Config) then
+    Config.Free;
 
   TCustomization.SaveRegistry;
 end;
 
 procedure TFrmMain.FormShow(Sender: TObject);
 begin
-  if Config.CheckForNewVersion then
+  if Assigned(Config) and Config.CheckForNewVersion then
     CheckMyVersion;
 end;
 

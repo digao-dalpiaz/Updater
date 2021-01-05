@@ -11,6 +11,7 @@ type
     BtnOK: TButton;
     BtnCancel: TButton;
     CkSecureMode: TCheckBox;
+    CkWriteLogFile: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
   end;
@@ -38,12 +39,14 @@ begin
   Width := Width+8; //fix theme behavior
 
   CkSecureMode.Checked := Config.SecureMode;
+  CkWriteLogFile.Checked := Config.WriteLogFile;
   CkCheckForNewVersion.Checked := Config.CheckForNewVersion;
 end;
 
 procedure TFrmCustomization.BtnOKClick(Sender: TObject);
 begin
   Config.SecureMode := CkSecureMode.Checked;
+  Config.WriteLogFile := CkWriteLogFile.Checked;
   Config.CheckForNewVersion := CkCheckForNewVersion.Checked;
 
   FrmMain.UpdSecureMode;
