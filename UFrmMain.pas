@@ -38,6 +38,7 @@ type
     IC_ToolBar: TImageCollection;
     IL_ToolBar: TVirtualImageList;
     IL_Masks: TImageList;
+    BtnCustomization: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BtnNewClick(Sender: TObject);
@@ -59,6 +60,8 @@ type
       LinkType: TSysLinkType);
     procedure BtnMasksClick(Sender: TObject);
     procedure LLogsDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure BtnCustomizationClick(Sender: TObject);
   private
     EngineRunning: Boolean;
 
@@ -81,11 +84,14 @@ implementation
 
 uses Vcl.Dialogs, System.UITypes, Vcl.Graphics, System.SysUtils,
   Winapi.Windows, Winapi.ShellAPI,
-  UFrmDefinition, UFrmMasksManage, UEngine, URegistry, UCommon;
+  UFrmDefinition, UFrmMasksManage, UEngine, URegistry, UVars, UCommon,
+  UFrmCustomization, UVersionCheck;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
   ReportMemoryLeaksOnShutdown := True;
+
+  LbVersion.Caption := Format('Version %s', [STR_VERSION]);
 
   TCustomization.LoadRegistry;
 
@@ -103,6 +109,12 @@ begin
   Config.Free;
 
   TCustomization.SaveRegistry;
+end;
+
+procedure TFrmMain.FormShow(Sender: TObject);
+begin
+  if Config.CheckForNewVersion then
+    CheckMyVersion;
 end;
 
 procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -273,6 +285,11 @@ end;
 procedure TFrmMain.BtnMasksClick(Sender: TObject);
 begin
   DoMasksManage;
+end;
+
+procedure TFrmMain.BtnCustomizationClick(Sender: TObject);
+begin
+  DoCustomization;
 end;
 
 procedure TFrmMain.BtnExecuteClick(Sender: TObject);

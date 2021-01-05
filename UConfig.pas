@@ -27,6 +27,8 @@ type
   TMasksTableList = class(TObjectList<TMasksTable>);
 
   TConfig = class
+    CheckForNewVersion: Boolean;
+
     Definitions: TDefinitionList;
     MasksTables: TMasksTableList;
 
@@ -56,6 +58,8 @@ begin
   MasksTables := TMasksTableList.Create;
 
   ConfigFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Config.xml');
+
+  CheckForNewVersion := True; //default value
 end;
 
 destructor TConfig.Destroy;
@@ -131,6 +135,8 @@ begin
 
     Root := XML.DocumentElement;
 
+    CheckForNewVersion := GetNodeValue(Root, 'CheckForNewVersion', nvkBoolean);
+
     XDefs := GetNode(Root, 'Definitions');
     for I := 0 to XDefs.ChildNodes.Count-1 do
     begin
@@ -184,6 +190,8 @@ begin
     XML.Active := True;
 
     Root := XML.AddChild('Config');
+
+    Root.AddChild('CheckForNewVersion').NodeValue := CheckForNewVersion;
 
     XDefs := Root.AddChild('Definitions');
     for D in Definitions do

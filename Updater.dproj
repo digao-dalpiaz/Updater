@@ -113,11 +113,16 @@
         <DCCReference Include="UFrmMasksAutoComplete.pas">
             <Form>FrmMasksAutoComplete</Form>
         </DCCReference>
+        <DCCReference Include="UFrmCustomization.pas">
+            <Form>FrmCustomization</Form>
+        </DCCReference>
         <DCCReference Include="UConfig.pas"/>
         <DCCReference Include="URegistry.pas"/>
         <DCCReference Include="UEngine.pas"/>
         <DCCReference Include="UMasks.pas"/>
         <DCCReference Include="UCommon.pas"/>
+        <DCCReference Include="UVersionCheck.pas"/>
+        <DCCReference Include="UVars.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

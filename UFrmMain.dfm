@@ -15,6 +15,7 @@ object FrmMain: TFrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter: TSplitter
@@ -281,14 +282,21 @@ object FrmMain: TFrmMain
         ImageIndex = 5
         OnClick = BtnMasksClick
       end
-      object BtnSeparator3: TToolButton
+      object BtnCustomization: TToolButton
         Left = 220
+        Top = 0
+        Hint = 'Customization'
+        ImageIndex = 7
+        OnClick = BtnCustomizationClick
+      end
+      object BtnSeparator3: TToolButton
+        Left = 254
         Top = 0
         Width = 8
         Style = tbsSeparator
       end
       object BtnExecute: TToolButton
-        Left = 228
+        Left = 262
         Top = 0
         Hint = 'Execute'
         ImageIndex = 6
@@ -306,9 +314,9 @@ object FrmMain: TFrmMain
       object LbVersion: TLabel
         Left = 8
         Top = 9
-        Width = 54
+        Width = 62
         Height = 13
-        Caption = 'Version 3.0'
+        Caption = 'Version ###'
       end
       object LbDigao: TLinkLabel
         Left = 72
@@ -639,6 +647,29 @@ object FrmMain: TFrmMain
               2F8071A9FE10605EAAF000E50BB8F15B2A93AC7F15EDE338599ACEA7CCBA8DA0
               2DBF693C6C21249505960000000049454E44AE426082}
           end>
+      end
+      item
+        Name = 'customize'
+        SourceImages = <
+          item
+            Image.Data = {
+              89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+              F8000000097048597300000B1300000B1301009A9C180000019D494441544889
+              ED93314B23511485BFFB1C8D8B0B068228889B540A8A768285886BC0CE4E248D
+              A5160113F00788FE0189A2368220A45061DB2D9708D68AA08262611616D9C5A8
+              20C62231771B1326712699A8A5A79BFBEEFDCE799779F0A91A927A07341AEDC0
+              B2E2A84E20D20E64816D595D5D70EAB7EA82C7626160170820A56C698CD9729B
+              F17C039D9B6B43E41468B395D318332A89C495DB9CF16A80314BB5E00AA2F1F8
+              807DAC9E150D571896C317179BC8643651ED0186EA32501054BBEDB532F8EC6C
+              2BB7B73F10090399B21C5E0C0414910B47F3F9F92E9A9B0F80F04BE9DE7EEE79
+              45996CE128F045FA4BE0584C01C8E72B5B7FDA3F3CDDC04F243498BCF9FE2F5B
+              A8D57A8731CBF6428317F833A41EF37C3BFC9B633CE4A3A5D1F1EFBE46645256
+              568E3D1B14E10A4180DF0F0592674FF87DE6A137605D5A465A503D41648F5C6E
+              4AD6D6CE2B19AE0FAD126E1B4837C0E83D3B57D5C25535F828B8A341113E32D6
+              1704D8FF75FA66F82B037BF28B3F1B00747746DF0C872AEF60667AFD5DC98B72
+              5D9142F0BD7057F98984BE1249F989843E14FC2927FD07D955904175AC17F700
+              00000049454E44AE426082}
+          end>
       end>
     Left = 168
     Top = 80
@@ -689,6 +720,11 @@ object FrmMain: TFrmMain
         CollectionName = 'run'
         Disabled = False
         Name = 'run'
+      end
+      item
+        CollectionIndex = 7
+        Disabled = False
+        Name = 'config'
       end>
     ImageCollection = IC_ToolBar
     Width = 24

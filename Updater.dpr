@@ -9,11 +9,14 @@ uses
   UFrmMasksManage in 'UFrmMasksManage.pas' {FrmMasksManage},
   UFrmMasksEdit in 'UFrmMasksEdit.pas' {FrmMasksEdit},
   UFrmMasksAutoComplete in 'UFrmMasksAutoComplete.pas' {FrmMasksAutoComplete},
+  UFrmCustomization in 'UFrmCustomization.pas' {FrmCustomization},
   UConfig in 'UConfig.pas',
   URegistry in 'URegistry.pas',
   UEngine in 'UEngine.pas',
   UMasks in 'UMasks.pas',
-  UCommon in 'UCommon.pas';
+  UCommon in 'UCommon.pas',
+  UVersionCheck in 'UVersionCheck.pas',
+  UVars in 'UVars.pas';
 
 {$R *.res}
 
