@@ -34,9 +34,9 @@ type
     procedure Load;
     procedure Save;
   public
-    SecureMode: Boolean;
-    WriteLogFile: Boolean;
     CheckForNewVersion: Boolean;
+    WriteLogFile: Boolean;
+    SecureMode: Boolean;
 
     Definitions: TDefinitionList;
     MasksTables: TMasksTableList;
@@ -64,9 +64,9 @@ begin
   ConfigFile := TPath.Combine(ExtractFilePath(Application.ExeName), 'Config.xml');
 
   //default values
-  SecureMode := True;
-  WriteLogFile := True;
   CheckForNewVersion := True;
+  WriteLogFile := True;
+  SecureMode := True;
 
   Load;
   Loaded := True;
@@ -148,9 +148,9 @@ begin
 
     Root := XML.DocumentElement;
 
-    SecureMode := GetNodeValue(Root, 'SecureMode', nvkBoolean);
-    WriteLogFile := GetNodeValue(Root, 'WriteLogFile', nvkBoolean);
     CheckForNewVersion := GetNodeValue(Root, 'CheckForNewVersion', nvkBoolean);
+    WriteLogFile := GetNodeValue(Root, 'WriteLogFile', nvkBoolean);
+    SecureMode := GetNodeValue(Root, 'SecureMode', nvkBoolean);
 
     XDefs := GetNode(Root, 'Definitions');
     for I := 0 to XDefs.ChildNodes.Count-1 do
@@ -206,9 +206,9 @@ begin
 
     Root := XML.AddChild('Config');
 
-    Root.AddChild('SecureMode').NodeValue := SecureMode;
-    Root.AddChild('WriteLogFile').NodeValue := WriteLogFile;
     Root.AddChild('CheckForNewVersion').NodeValue := CheckForNewVersion;
+    Root.AddChild('WriteLogFile').NodeValue := WriteLogFile;
+    Root.AddChild('SecureMode').NodeValue := SecureMode;
 
     XDefs := Root.AddChild('Definitions');
     for D in Definitions do

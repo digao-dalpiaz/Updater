@@ -38,16 +38,16 @@ procedure TFrmCustomization.FormCreate(Sender: TObject);
 begin
   Width := Width+8; //fix theme behavior
 
-  CkSecureMode.Checked := Config.SecureMode;
-  CkWriteLogFile.Checked := Config.WriteLogFile;
   CkCheckForNewVersion.Checked := Config.CheckForNewVersion;
+  CkWriteLogFile.Checked := Config.WriteLogFile;
+  CkSecureMode.Checked := Config.SecureMode;
 end;
 
 procedure TFrmCustomization.BtnOKClick(Sender: TObject);
 begin
-  Config.SecureMode := CkSecureMode.Checked;
-  Config.WriteLogFile := CkWriteLogFile.Checked;
   Config.CheckForNewVersion := CkCheckForNewVersion.Checked;
+  Config.WriteLogFile := CkWriteLogFile.Checked;
+  Config.SecureMode := CkSecureMode.Checked;
 
   FrmMain.UpdSecureMode;
 
