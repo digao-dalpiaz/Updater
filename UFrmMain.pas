@@ -352,6 +352,7 @@ begin
   case A[1] of
     '@': Color := clWhite; //definition title
     ':': Color := clSilver; //general info
+    '*': Color := $0070ADF1; //warning
     '#': Color := $006C6CFF; //error
     '+': begin
            Color := $0000D900;

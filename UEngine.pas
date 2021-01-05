@@ -85,11 +85,11 @@ begin
         if not Config.SecureMode then
           D.LastUpdate := Now; //update definition timestamp
 
-        SW.Stop;
-        Log(':', 'Elapsed time: '+SW.Elapsed.ToString);
-
         if Queue.TotalSize>0 then
           Log(':', 'Total copy size: '+BytesToMB(Queue.TotalSize));
+
+        SW.Stop;
+        Log(':', 'Elapsed time: '+SW.Elapsed.ToString);
       end;
     end;
   except
@@ -107,7 +107,7 @@ begin
   if Config.WriteLogFile then
   begin
     if CharInSet(Prefix, ['+', '~', '-']) then
-      LogFilePrefix := Format('[%s]', [Prefix]);
+      LogFilePrefix := Format('(%s)', [Prefix]);
 
     TFile.AppendAllText(pubLogFile, DateTimeToStr(Now)+' - '+LogFilePrefix+Text + #13#10);
   end;
@@ -306,11 +306,11 @@ begin
   Queue.TotalSize := 0;
   Queue.CurrentSize := 0;
 
-  Log('@', Def.Name);
+  Log('@', '['+Def.Name+']');
   Status(string.Empty);
 
   if Config.SecureMode then
-    Log('@', '*** SECURE MODE - No changes will be made ***');
+    Log('*', '*** SECURE MODE - No changes will be made ***');
 
   if not TDirectory.Exists(Def.Source) then
     raise Exception.Create('Source not found');
