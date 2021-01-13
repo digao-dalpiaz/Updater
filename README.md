@@ -5,8 +5,6 @@ Delphi App to synchronize folder contents
 
 Please, read the article on my website: http://digaodalpiaz.com/wp/folder-and-file-synchronizer/
 
-> The app is under development right now.
-
 ## Description
 
 This application allows you to keep files synchronized by creating a list of repositories and allowing options like masks inclusions and exclusions.
@@ -14,6 +12,8 @@ This application allows you to keep files synchronized by creating a list of rep
 The synchronization method is based on files write date/time property, so the application can quickly check if a file is updated.
 
 There is a masks tables area, where you can insert several lists of masks, avoiding repeating group of masks in your repositories. In inclusions and exclusions masks, you can specify a literal mask, or specify a masks table, by prefixing table name with `:`.
+
+**Warning! The incorrect use of this application can result in data loss, considering that the sync destination folder may have its files replaced and / or deleted according to the configuration. Always confirm the destination folder path and use secure mode to test your settings.**
 
 ![Masks Tables](images/masks_tables.png)
 
