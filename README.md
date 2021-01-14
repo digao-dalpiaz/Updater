@@ -19,6 +19,13 @@ There is a masks tables area, where you can insert several lists of masks, avoid
 
 ![Edit Definition](images/edit_definition.png)
 
+> All changes to files are made only in the destination folder. The source folder is never modified.
+
+### The changes can be of the following types:
+- Added: When a file exists at the source but does not exist at the destination. In this case, the file will be created at the destination.
+- Modified: When a file exists at the source and at the destination, but the file change timestamp is different, that is, the file has been modified. In this case, the file will be replaced at the destination with the new content from the source.
+- Deleted: When a file or folder exists at the destination, but no longer exists at the source. **In this case, the file will be excluded from the destination (only when the exclusion option is enabled in the definition settings)**.
+
 ## Dependency
 
 This application depends on my component DzDirSeek, available here on GitHub: https://github.com/digao-dalpiaz/DzDirSeek
