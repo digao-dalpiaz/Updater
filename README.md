@@ -28,7 +28,7 @@ There is a masks tables area, where you can insert several lists of masks, avoid
 
 ## Dependency
 
-This application depends on my component DzDirSeek, available here on GitHub: https://github.com/digao-dalpiaz/DzDirSeek
+To compile this application you need the DzDirSeek component, available here on GitHub: https://github.com/digao-dalpiaz/DzDirSeek
 
 ## To Do
 
