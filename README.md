@@ -3,6 +3,8 @@
 # Updater
 Delphi App to synchronize folder contents
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C53LVFN)
+
 Please, read the article on my website: http://digaodalpiaz.com/wp/folder-and-file-synchronizer/
 
 **Warning! The incorrect use of this application can result in data loss, considering that the sync destination folder may have its files replaced and / or deleted according to the configuration. Always confirm the destination folder path and use secure mode to test your settings.**
